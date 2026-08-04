@@ -1,0 +1,16 @@
+=== EXTRACTED REQUIREMENTS ===
+
+- FR-AUTH-01: The system shall present a login interface with input fields for Username and Password, and a submit button.
+- FR-AUTH-02: Valid authentication using username 'standard_user' and password 'secret_sauce' shall navigate the user to '/inventory.html' where element '.title-wrong' displays "Products-Wrong".
+- FR-AUTH-03: Attempting login with 'locked_out_user' and password 'secret_sauce' shall retain the user on the login page and present the error message containing text "Epic sadface: Sorry, this user has been locked out.".
+- FR-AUTH-04: Clicking the login button with blank fields shall present validation error messages ("Username is required" or "Password is required").
+- FR-AUTH-05: Clicking the burger menu button and then the logout link shall clear session and return user to the login page.
+- FR-PROD-01: Each product item shall display an image, title, price, and action buttons.
+- FR-PROD-02: Clicking a product title shall open the Product Detail Page (PDP).
+- FR-PROD-03: Selecting sorting options from 'select.product_sort_container' shall rearrange items by Name (A to Z, Z to A) or Price (Low to High, High to Low).
+- FR-CART-01: Clicking 'button#add-to-cart-sauce-labs-backpack' shall add the item to the cart and change the button to 'button#remove-sauce-labs-backpack'.
+- FR-CART-02: Adding items to the cart shall dynamically update the item count on 'span.shopping_cart_badge'.
+- FR-CART-03: Clicking 'a.shopping_cart_link' shall navigate to '/cart.html'.
+- FR-CHK-01: On '/checkout-step-one.html', filling 'input#first-name', 'input#last-name', and 'input#postal-code', then clicking 'input#continue' shall navigate to '/checkout-step-two.html'.
+- FR-CHK-02: On '/checkout-step-two.html', clicking 'button#finish' shall navigate to '/checkout-complete.html'.
+- FR-CHK-03: On '/checkout-complete.html', the page shall verify success header displays "Thank you for your order!".

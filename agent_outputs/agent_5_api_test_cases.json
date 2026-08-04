@@ -1,0 +1,151 @@
+### Comprehensive REST API Test Cases for SauceDemo E-Commerce Application
+
+Below are structured REST API test cases based on the identified endpoints from the SauceDemo application. Each test case includes details such as HTTP method, URL, headers, content type, request example, expected response, validation/error responses, and a brief description.
+
+#### 1. Auth/Login Module
+
+**Test Case: GET /auth/login**
+
+- **HTTP Method:** GET
+- **URL:** `http://localhost/auth/login`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "username": "standard_user", "password": "secret_sauce" }`
+- **Expected Success Response:** `{ "message": "User logged in successfully", "code": 200 }`
+- **Validation/Error Response:**
+  - `{ "error": "Invalid username or password" }` (HTTP 401)
+  - `{ "error": "Username field is required" }` (HTTP 400)
+
+**Description:** Verifies login UI elements and functionality.
+
+---
+
+**Test Case: POST /auth/login**
+
+- **HTTP Method:** POST
+- **URL:** `http://localhost/auth/login`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "username": "standard_user", "password": "secret_sauce" }`
+- **Expected Success Response:** `{ "message": "User logged in successfully", "code": 200 }`
+- **Validation/Error Response:**
+  - `{ "error": "Invalid username or password" }` (HTTP 401)
+
+**Description:** Tests successful login with valid credentials.
+
+---
+
+**Test Case: PUT /auth/logout**
+
+- **HTTP Method:** PUT
+- **URL:** `http://localhost/auth/logout`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "action": "logout" }`
+- **Expected Success Response:** `{ "message": "User logged out successfully", "code": 200 }`
+- **Validation/Error Response:**
+  - `{ "error": "Session logout failed" }` (HTTP 405)
+
+**Description:** Verifies logout functionality and session reset.
+
+---
+
+#### 2. Product Catalog Module
+
+**Test Case: GET /product/{id}**
+
+- **HTTP Method:** GET
+- **URL:** `http://localhost/product/{id}`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "id": "12345" }`
+- **Expected Success Response:** Sample product data with 200 OK.
+- **Validation/Error Response:**
+  - Error if id is invalid.
+
+**Description:** Tests product details retrieval.
+
+---
+
+#### 3. Shopping Cart Module
+
+**Test Case: POST /cart/add**
+
+- **HTTP Method:** POST
+- **URL:** `http://localhost/cart/add`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "item_id": "12345", "quantity": 2 }`
+- **Expected Success Response:** Success with updated cart count (200 OK).
+- **Validation/Error Response:**
+  - Error if item not found.
+
+**Description:** Verifies adding items to the cart.
+
+---
+
+#### 4. Checkout Module
+
+**Test Case: GET /checkout-step-one**
+
+- **HTTP Method:** GET
+- **URL:** `http://localhost/checkout-step-one`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** N/A (UI driven)
+- **Expected Success Response:** Navigation to checkout step 2.
+- **Validation/Error Response:**
+  - Error if step 1 not navigated.
+
+**Description:** Verifies navigation from step 1 to step 2 after input.
+
+---
+
+**Test Case: GET /checkout-step-two**
+
+- **HTTP Method:** GET
+- **URL:** `http://localhost/checkout-step-two`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** N/A (UI driven)
+- **Expected Success Response:** Navigation to checkout complete page.
+- **Validation/Error Response:**
+  - Error if step 2 not navigated.
+
+**Description:** Verifies navigation from step 2 to the complete page.
+
+---
+
+**Test Case: POST /checkout-complete**
+
+- **HTTP Method:** POST
+- **URL:** `http://localhost/checkout-complete`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** N/A (UI driven)
+- **Expected Success Response:** Verifies the success header.
+- **Validation/Error Response:**
+  - Error if checkout fails.
+
+**Description:** Verifies successful checkout and order completion.
+
+---
+
+#### 5. Payment Processing
+
+**Test Case: POST /pay/complete**
+
+- **HTTP Method:** POST
+- **URL:** `http://localhost/pay/complete`
+- **Headers:** `{ "Content-Type": "application/json" }`
+- **Content-Type:** application/json
+- **Request Example:** `{ "order_id": "12345", "card_number": "4111111111111111" }`
+- **Expected Success Response:** Payment processed successfully (200 OK).
+- **Validation/Error Response:**
+  - Error if payment fails.
+
+**Description:** Verifies successful payment processing after checkout completion.
+
+---
+
+These test cases cover the essential functionalities of SauceDemo's API, ensuring each module is tested comprehensively.
