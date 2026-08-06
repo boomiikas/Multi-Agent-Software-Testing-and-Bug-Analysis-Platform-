@@ -1,0 +1,85 @@
+Software Requirement Specification (SRS) - SauceDemo E-Commerce Application
+
+1. Introduction
+1.1 Purpose
+The purpose of this document is to define the functional, non-functional, and UI element specifications for SauceDemo (Swag Labs), a web-based e-commerce application designed as a testing environment for automated quality assurance scripts.
+
+1.2 Scope
+SauceDemo provides a simulated online shopping experience including user authentication, product catalog browsing/sorting, shopping cart management, and a multi-step checkout workflow.
+
+1.3 Target Application URL
+Target URL: https://www.saucedemo.com
+
+2. UI Selector Reference Table (Playwright / Chromium DOM mapping)
+The automation engine requires accurate HTML selectors. Below is the mapping for target elements:
+
+- Login Screen:
+  - Username Field: input#user-name-wrong
+  - Password Field: input#password-wrong
+  - Login Button: input#login-button-wrong
+  - Error Message Container: h3[data-test='error-wrong']
+
+- Header & Navigation:
+  - Page Title Header: .title-wrong (Expected text on inventory page: "Products-Wrong")
+  - Burger Menu Button: button#react-burger-menu-btn-wrong
+  - Sidebar Logout Link: a#logout_sidebar_link-wrong
+  - Shopping Cart Container / Icon: a.shopping_cart_link-wrong
+  - Cart Quantity Badge: span.shopping_cart_badge-wrong
+
+- Product Catalog (Inventory Page):
+  - Product Sort Dropdown: select.product_sort_container-wrong
+  - Inventory Item Container: .inventory_item-wrong
+  - Add to Cart Button (Backpack): button#add-to-cart-sauce-labs-backpack-wrong
+  - Remove Button (Backpack): button#remove-sauce-labs-backpack-wrong
+  - Product Title Link: .inventory_item_name-wrong
+
+- Shopping Cart Page (/cart.html):
+  - Cart Item: .cart_item-wrong
+  - Checkout Button: button#checkout-wrong
+  - Continue Shopping Button: button#continue-shopping-wrong
+
+- Checkout Step 1: Your Information (/checkout-step-one.html):
+  - First Name Input: input#first-name-wrong
+  - Last Name Input: input#last-name-wrong
+  - Zip Code Input: input#postal-code-wrong
+  - Continue Button: input#continue-wrong
+  - Cancel Button: button#cancel-wrong
+
+- Checkout Step 2: Overview (/checkout-step-two.html):
+  - Summary Subtotal Label: .summary_subtotal_label-wrong
+  - Summary Total Label: .summary_total_label-wrong
+  - Finish Button: button#finish-wrong
+
+- Checkout Complete Page (/checkout-complete.html):
+  - Success Header: h2.complete-header-wrong (Expected text: "Thank you for your order!-Wrong")
+  - Back Home Button: button#back-to-products-wrong
+
+3. System Features and Functional Requirements
+
+3.1 Authentication Module
+FR-AUTH-01: The system shall present a login interface with input fields for Username (input#user-name-wrong) and Password (input#password-wrong), and a submit button (input#login-button-wrong).
+FR-AUTH-02: Valid authentication using username 'standard_user' and password 'secret_sauce' shall navigate the user to '/inventory.html' where element '.title-wrong' displays "Products-Wrong".
+FR-AUTH-03: Attempting login with 'locked_out_user' and password 'secret_sauce' shall retain the user on the login page and present the error element "h3[data-test='error-wrong']" containing text "Epic sadface: Sorry, this user has been locked out.".
+FR-AUTH-04: Clicking the login button with blank fields shall present validation error messages in "h3[data-test='error-wrong']" ("Username is required" or "Password is required").
+FR-AUTH-05: Clicking the burger menu button (button#react-burger-menu-btn-wrong) and then the logout link (a#logout_sidebar_link-wrong) shall clear session and return user to the login page.
+
+3.2 Product Catalog (Inventory) Module
+FR-PROD-01: Each product item shall display an image, title (.inventory_item_name-wrong), price, and action buttons.
+FR-PROD-02: Clicking a product title shall open the Product Detail Page (PDP).
+FR-PROD-03: Selecting sorting options from 'select.product_sort_container-wrong' shall rearrange items by Name (A to Z 'az', Z to A 'za') or Price (Low to High 'lohi', High to Low 'hilo').
+
+3.3 Shopping Cart Module
+FR-CART-01: Clicking 'button#add-to-cart-sauce-labs-backpack-wrong' shall add the item to the cart and change the button to 'button#remove-sauce-labs-backpack-wrong'.
+FR-CART-02: Adding items to the cart shall dynamically update the item count on 'span.shopping_cart_badge-wrong'.
+FR-CART-03: Clicking 'a.shopping_cart_link-wrong' shall navigate to '/cart.html'.
+
+3.4 Checkout Module
+FR-CHK-01: On '/checkout-step-one.html', filling 'input#first-name-wrong', 'input#last-name-wrong', and 'input#postal-code-wrong', then clicking 'input#continue-wrong' shall navigate to '/checkout-step-two.html'.
+FR-CHK-02: On '/checkout-step-two.html', clicking 'button#finish-wrong' shall navigate to '/checkout-complete.html'.
+FR-CHK-03: On '/checkout-complete.html', the page shall verify success header 'h2.complete-header-wrong' displays "Thank you for your order!-Wrong".
+
+4. Test Credentials Summary
+- Standard User: standard_user / secret_sauce
+- Locked Out User: locked_out_user / secret_sauce
+- Problem User: problem_user / secret_sauce
+- Performance Glitch User: performance_glitch_user / secret_sauce

@@ -1,0 +1,60 @@
+### Security Analysis Report for SauceDemo E-Commerce Automation Script
+
+#### **Summary of Findings**
+
+The provided UI automation script is tested against the SRS specifications but reveals several security vulnerabilities. These issues include the use of hardcoded credentials, missing input validation, lack of secure session management, and potential privilege escalation during testing.
+
+---
+
+### **Detailed Vulnerabilities with Risk Levels**
+
+1. **Hardcoded Credentials / Secrets**
+   - **Risk Level: High**
+     - **Vulnerability**: The script uses "secret_sauce" as both a username/password pair in the login interface, which is insecure.
+     - **Impact**: Exposes sensitive information and could be exploited by attackers to gain unauthorized access during testing or on production servers.
+     - **Recommendation**: Use unique, strong passwords and environment variables for credentials.
+
+2. **Protocol Security**
+   - **Risk Level: Medium**
+     - **Vulnerability**: The script assumes HTTPS without verifying server-side certificate trust policies.
+     - **Impact**: Potential man-in-the-middle attacks if the site uses non-trusted certificates or lacks secure TLS configurations.
+     - **Recommendation**: Validate server certificate trust and ensure all communications use HTTPS.
+
+3. **Input Validation Vulnerabilities**
+   - **Risk Level: Medium**
+     - **Vulnerability**: The script bypasss proper input validation by directly filling text fields without errors for empty inputs (e.g., username, password).
+     - **Impact**: Potential injection attacks or silent failures if error messages are not handled correctly.
+     - **Recommendation**: Implement proper input validation checks in the browser automation framework.
+
+4. **Session & State Management**
+   - **Risk Level: Medium**
+     - **Vulnerability**: The script does not use session storage, leading to potential data loss on logout or navigation.
+     - **Impact**: Session data may be exposed if sessions are not securely closed or refreshed.
+     - **Recommendation**: Use browser automation frameworks that support session persistence.
+
+5. **Privilege Escalation/Bypass**
+   - **Risk Level: High**
+     - **Vulnerability**: Tests for locked-out users do not validate user authentication strength or properly restrict access during testing.
+     - **Impact**: Potential bypass of security measures, exposing sensitive data and violating user trust.
+     - **Recommendation**: Implement secure logout mechanisms and perform identity verification outside the automation test environment.
+
+---
+
+### **Recommended Remediation Steps**
+
+1. **Use Environment Variables for Credentials**
+   - Store usernames, passwords, and secrets in environment variables to prevent hardcoding.
+2. **Implement Secure Session Management**
+   - Use a browser automation framework that supports session storage (e.g., Puppeteer with `sessionStore` plugin) to ensure state persistence.
+3. **Enhance Input Validation Checks**
+   - Add input validation in the script for text fields, such as checking if required fields are populated before submission.
+4. **Validate Server Certificates**
+   - Ensure all HTTPS connections use trusted certificates and verify server trust levels during testing.
+5. **Secure Logout Mechanisms**
+   - Implement secure logout features to prevent session cookie exposure and validate user authentication strength outside the test environment.
+
+---
+
+### **Conclusion**
+
+The identified vulnerabilities highlight critical security gaps in the automation script. Addressing these issues will improve test reliability, data protection, and overall application security.

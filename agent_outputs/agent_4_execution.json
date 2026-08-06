@@ -1,0 +1,7 @@
+{
+    "status": "FAILED",
+    "error_type": "TimeoutError",
+    "error_message": "TimeoutError: Page.fill: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"input#user-name-wrong\")\n (at: await page.fill(\"input#user-name-wrong\", \"standard_user\"))",
+    "error_file": "agent_outputs\\agent_4_error_log.json",
+    "screenshot": "agent_outputs\\agent_4_failure_screenshot.png"
+}
