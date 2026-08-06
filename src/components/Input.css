@@ -1,0 +1,127 @@
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.input-wrapper--full {
+  width: 100%;
+}
+
+.input__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.input__required {
+  color: var(--danger);
+}
+
+.input__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input__field {
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  transition: var(--transition);
+  outline: none;
+}
+
+.input__field::placeholder {
+  color: var(--text-muted);
+}
+
+.input__field:hover:not(:disabled) {
+  border-color: var(--border-hover);
+}
+
+.input__field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-muted);
+}
+
+.input-wrapper--error .input__field {
+  border-color: var(--danger);
+}
+
+.input-wrapper--error .input__field:focus {
+  box-shadow: 0 0 0 3px var(--danger-muted);
+}
+
+.input-wrapper--disabled .input__field {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bg-surface-hover);
+}
+
+/* Icons */
+.input__icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.input__icon--left {
+  left: 12px;
+}
+
+.input__icon--right {
+  right: 12px;
+}
+
+.input__icon--left + .input__field,
+.input__container:has(.input__icon--left) .input__field {
+  padding-left: 40px;
+}
+
+.input__container:has(.input__icon--right) .input__field,
+.input__container:has(.input__toggle) .input__field {
+  padding-right: 40px;
+}
+
+/* Password toggle */
+.input__toggle {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: var(--transition-fast);
+}
+
+.input__toggle:hover {
+  color: var(--text-secondary);
+}
+
+/* Messages */
+.input__error {
+  font-size: var(--text-xs);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.input__helper {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
