@@ -1,0 +1,9 @@
+.success-page { position: relative; overflow: hidden; }
+.success-confetti { position: fixed; top: 0; left: 0; right: 0; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
+.confetti-piece { position: absolute; top: -20px; border-radius: 2px; animation: confettiDrop 4s linear forwards; }
+.success-header { text-align: center; margin-bottom: var(--space-8); position: relative; z-index: 1; }
+.success-header__title { font-size: var(--text-2xl); font-weight: var(--weight-bold); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+.success-header__subtitle { font-size: var(--text-base); color: var(--text-secondary); }
+.success-stat { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+.success-stat__value { font-size: var(--text-xl); font-weight: var(--weight-bold); }
+.success-stat__label { font-size: var(--text-xs); color: var(--text-muted); }
