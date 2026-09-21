@@ -85,6 +85,7 @@ function AppLayout() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/projects" element={<ProjectList />} />
             <Route path="/projects/new" element={<ProjectCreator />} />
+            <Route path="/projects/:id" element={<ProjectCreator />} />
             <Route path="/run-monitor" element={<RunMonitor />} />
             <Route path="/console" element={<ConsoleLogs />} />
             <Route path="/success" element={<SuccessScreen />} />

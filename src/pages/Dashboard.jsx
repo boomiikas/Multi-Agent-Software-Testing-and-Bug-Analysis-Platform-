@@ -1,18 +1,12 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FolderKanban, Activity, TrendingUp, Clock, Plus, Play, FileText, Code2, ArrowUpRight, ArrowDownRight, ExternalLink, Bot } from 'lucide-react';
+import { FolderKanban, Activity, TrendingUp, Clock, Plus, Play, FileText, Code2, ArrowUpRight, ArrowDownRight, ExternalLink, Bot, Loader2 } from 'lucide-react';
 import Card from '../components/Card';
 import Badge from '../components/Badge';
 import ProgressBar from '../components/ProgressBar';
-import { mockDashboardStats, mockTestRuns, mockProjects } from '../data/mockData';
+import { dashboardApi, projectApi } from '../services/api';
 import './Dashboard.css';
-
-const statCards = [
-  { label: 'Total Projects', value: mockDashboardStats.totalProjects, trend: mockDashboardStats.totalProjectsTrend, icon: FolderKanban, color: 'var(--primary)' },
-  { label: 'Active Runs', value: mockDashboardStats.activeRuns, trend: mockDashboardStats.activeRunsTrend, icon: Activity, color: 'var(--warning)' },
-  { label: 'Pass Rate', value: `${mockDashboardStats.passRate}%`, trend: mockDashboardStats.passRateTrend, icon: TrendingUp, color: 'var(--success)' },
-  { label: 'Avg Duration', value: mockDashboardStats.avgDuration, trend: mockDashboardStats.avgDurationTrend, icon: Clock, color: 'var(--info)' },
-];
 
 const quickActions = [
   { title: 'New Project', desc: 'Create a new testing project', icon: Plus, to: '/projects/new', color: 'var(--primary)' },
@@ -36,6 +30,40 @@ function formatDuration(s) {
 }
 
 export default function Dashboard() {
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [runs, setRuns] = useState([]);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      dashboardApi.getStats(),
+      dashboardApi.getRecentRuns(),
+      projectApi.getProjects()
+    ]).then(([s, r, p]) => {
+      setStats(s);
+      setRuns(r);
+      setProjects(p);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column', gap: 16 }}>
+        <Loader2 className="animate-spin" size={32} color="var(--primary)" />
+        <p style={{ color: 'var(--text-secondary)' }}>Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  const statCards = [
+    { label: 'Total Projects', value: stats.totalProjects, trend: stats.totalProjectsTrend, icon: FolderKanban, color: 'var(--primary)' },
+    { label: 'Active Runs', value: stats.activeRuns, trend: stats.activeRunsTrend, icon: Activity, color: 'var(--warning)' },
+    { label: 'Pass Rate', value: `${stats.passRate}%`, trend: stats.passRateTrend, icon: TrendingUp, color: 'var(--success)' },
+    { label: 'Avg Duration', value: stats.avgDuration, trend: stats.avgDurationTrend, icon: Clock, color: 'var(--info)' },
+  ];
+
   return (
     <div className="dashboard">
       <div className="page-header">
@@ -98,7 +126,9 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {mockTestRuns.map(run => (
+              {runs.length === 0 ? (
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--text-muted)' }}>No recent runs</td></tr>
+              ) : runs.map(run => (
                 <tr key={run.id}>
                   <td className="dash-table__project">{run.projectName}</td>
                   <td><Badge variant={statusMap[run.status]} dot pulse={run.status === 'running'}>{run.status}</Badge></td>
@@ -118,7 +148,9 @@ export default function Dashboard() {
         <Link to="/projects" className="dashboard__view-all">View All <ExternalLink size={14} /></Link>
       </div>
       <div className="grid grid--3">
-        {mockProjects.slice(0, 3).map((p, i) => (
+        {projects.length === 0 ? (
+           <div style={{ padding: 24, color: 'var(--text-muted)', gridColumn: 'span 3' }}>No projects yet.</div>
+        ) : projects.slice(0, 3).map((p, i) => (
           <motion.div key={p.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
             <Card clickable className="dash-project">
               <div className="dash-project__header">

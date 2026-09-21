@@ -1,26 +1,34 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Search, Grid, List, Play, Edit, Trash2, ExternalLink, Calendar, Filter } from 'lucide-react';
+import { Plus, Search, Grid, List, Play, Edit, Trash2, ExternalLink, Calendar, Filter, Loader2 } from 'lucide-react';
 import Card from '../../components/Card';
 import Badge from '../../components/Badge';
 import Button from '../../components/Button';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from '../../components/Modal';
 import EmptyState from '../../components/EmptyState';
-import { mockProjects } from '../../data/mockData';
+import { projectApi } from '../../services/api';
 import './ProjectList.css';
 
 const statusMap = { completed: 'success', running: 'warning', failed: 'danger', pending: 'default' };
 
 export default function ProjectList() {
-  const [projects, setProjects] = useState(mockProjects);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [view, setView] = useState('grid');
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('newest');
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    projectApi.getProjects().then(data => {
+      setProjects(data);
+      setLoading(false);
+    });
+  }, []);
 
   const filtered = useMemo(() => {
     let list = [...projects];
@@ -34,9 +42,20 @@ export default function ProjectList() {
   }, [projects, search, filter, sort]);
 
   const handleDelete = () => {
-    setProjects(prev => prev.filter(p => p.id !== deleteId));
-    setDeleteId(null);
+    projectApi.deleteProject(deleteId).then(() => {
+      setProjects(prev => prev.filter(p => p.id !== deleteId));
+      setDeleteId(null);
+    });
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column', gap: 16 }}>
+        <Loader2 className="animate-spin" size={32} color="var(--primary)" />
+        <p style={{ color: 'var(--text-secondary)' }}>Loading projects...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="project-list">
@@ -95,7 +114,7 @@ export default function ProjectList() {
                 )}
                 <div className="pl-card__actions">
                   <Button variant="primary" size="sm" leftIcon={Play} onClick={() => navigate('/run-monitor')}>Run</Button>
-                  <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate(`/projects/new`)}>Edit</Button>
+                  <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate(`/projects/${p.id}`)}>Edit</Button>
                   <Button variant="danger-ghost" size="sm" leftIcon={Trash2} onClick={() => setDeleteId(p.id)}>Delete</Button>
                 </div>
               </Card>
@@ -117,7 +136,7 @@ export default function ProjectList() {
                   <td>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <Button variant="ghost" size="sm" leftIcon={Play} onClick={() => navigate('/run-monitor')} />
-                      <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate('/projects/new')} />
+                      <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate(`/projects/${p.id}`)} />
                       <Button variant="danger-ghost" size="sm" leftIcon={Trash2} onClick={() => setDeleteId(p.id)} />
                     </div>
                   </td>
