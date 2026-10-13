@@ -1,0 +1,4 @@
+.register__strength { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-2); }
+.register__strength-bar { display: flex; gap: 4px; flex: 1; }
+.register__strength-segment { height: 4px; flex: 1; border-radius: 2px; background: var(--bg-surface-hover); transition: background 0.3s ease; }
+.register__strength-label { font-size: var(--text-xs); font-weight: var(--weight-medium); min-width: 48px; text-align: right; }

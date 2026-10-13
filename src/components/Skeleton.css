@@ -1,0 +1,9 @@
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-surface-hover) 25%, var(--bg-surface-elevated) 50%, var(--bg-surface-hover) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+.skeleton--text { height: 16px; width: 100%; border-radius: var(--radius-sm); }
+.skeleton--circular { border-radius: 50%; width: 40px; height: 40px; }
+.skeleton--rectangular { height: 120px; width: 100%; border-radius: var(--radius-md); }
