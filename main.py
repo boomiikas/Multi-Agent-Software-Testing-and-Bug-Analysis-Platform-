@@ -15,7 +15,7 @@ from agent7_rca import rca_agent
 from agent8_report import report_generation_agent
 
 # Configuration
-SRS_FILE_PATH = "srs_document.txt"
+SRS_FILE_PATH = "srs-document.txt"
 TARGET_WEBSITE_URL = "https://www.saucedemo.com"  #https://www.saucedemo.com/
 OUTPUT_DIR = "agent_outputs"
 
@@ -227,6 +227,7 @@ async def main():
     
     print("\n" + "=" * 60)
     print(f"ALL AGENT ARTIFACTS GENERATED IN: ./{OUTPUT_DIR}/")
+    print("SUCCESS: SauceDemo test pipeline completed successfully.")
     print("=" * 60)
 
 

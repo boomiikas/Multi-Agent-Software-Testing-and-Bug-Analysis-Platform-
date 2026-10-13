@@ -1,0 +1,397 @@
+SauceDemo — Software Requirements Specification (SRS)
+
+Project: SauceDemo E-Commerce Web Application
+Application URL: https://www.saucedemo.com
+Document Type: Software Requirements Specification
+Version: 2.0
+Automation source of truth: routes, selectors, workflows, and test data in this document
+
+1. INTRODUCTION
+
+1.1 Purpose
+This document specifies the functional and non-functional requirements of the SauceDemo web application.
+
+The application simulates an e-commerce shopping platform. Users can authenticate, browse products, view product details, add or remove products from a shopping cart, and complete a simulated checkout process.
+
+This SRS can be used as input for automated software testing, test-case generation, UI automation, API/security analysis where applicable, and defect identification.
+
+1.2 Scope
+The system shall provide:
+1. User Login
+2. Product/Inventory Management
+3. Product Sorting
+4. Product Details
+5. Shopping Cart
+6. Checkout
+7. Order Completion
+8. Logout
+9. Reset Application State
+
+1.3 Routes and navigation contract
+
+- Login route: /
+- Inventory route: /inventory.html
+- Product detail route: /inventory-item.html?id=<product-id>
+- Cart route: /cart.html
+- Checkout information route: /checkout-step-one.html
+- Checkout overview route: /checkout-step-two.html
+- Checkout completion route: /checkout-complete.html
+
+Tests must use these routes for URL assertions. Do not invent routes such as
+/products, /cart, or /checkout/confirmation.
+
+1.4 UI selector reference table
+
+The selectors below are the only selectors permitted in generated Playwright
+scripts. Selectors for a later page must be used only after navigating to that
+page. Do not invent selectors from natural-language descriptions.
+
+Login page:
+- Username field: input#user-name
+- Password field: input#password
+- Login button: input#login-button
+- Login error: h3[data-test='error']
+
+Header and navigation:
+- Page title: .title
+- Menu button: button#react-burger-menu-btn
+- Logout link: a#logout_sidebar_link
+- Reset application link: a#reset_sidebar_link
+- Close menu button: button#react-burger-cross-btn
+- Shopping cart link: a.shopping_cart_link
+- Cart quantity badge: span.shopping_cart_badge
+
+Inventory page:
+- Inventory list: .inventory_list
+- Inventory item: .inventory_item
+- Product name: .inventory_item_name
+- Product description: .inventory_item_desc
+- Product price: .inventory_item_price
+- Product image: .inventory_item_img
+- Product sort dropdown: select.product_sort_container
+- Backpack add button: button#add-to-cart-sauce-labs-backpack
+- Backpack remove button: button#remove-sauce-labs-backpack
+- Bike light add button: button#add-to-cart-sauce-labs-bike-light
+- Bolt t-shirt add button: button#add-to-cart-sauce-labs-bolt-t-shirt
+- Fleece jacket add button: button#add-to-cart-sauce-labs-fleece-jacket
+- Onesie add button: button#add-to-cart-sauce-labs-onesie
+
+Product detail page:
+- Detail container: .inventory_details
+- Detail name: .inventory_details_name
+- Detail description: .inventory_details_desc
+- Detail price: .inventory_details_price
+- Detail image: .inventory_details_img
+- Back to products button: button#back-to-products
+
+Cart page:
+- Cart contents container: .cart_contents_container
+- Cart list: .cart_list
+- Cart item: .cart_item
+- Cart item name: .inventory_item_name
+- Cart item price: .inventory_item_price
+- Cart item quantity: .cart_quantity
+- Checkout button: button#checkout
+- Continue shopping button: button#continue-shopping
+- Remove backpack button: button#remove-sauce-labs-backpack
+
+Checkout information page:
+- Checkout form: .checkout_info
+- First name field: input#first-name
+- Last name field: input#last-name
+- Postal code field: input#postal-code
+- Continue button: input#continue
+- Cancel button: button#cancel
+- Checkout error: h3[data-test='error']
+
+Checkout overview page:
+- Summary container: .checkout_summary_container
+- Summary subtotal: .summary_subtotal_label
+- Summary tax: .summary_tax_label
+- Summary total: .summary_total_label
+- Finish button: button#finish
+- Cancel button: button#cancel
+
+Checkout completion page:
+- Complete container: .checkout_complete_container
+- Complete header: h2.complete-header
+- Complete message: .complete-text
+- Back home button: button#back-to-products
+
+Selector usage rules:
+- Use page.fill(selector, value) for text inputs.
+- Use page.click(selector) for buttons and links.
+- Use page.select_option('select.product_sort_container', value) for sorting.
+- Use page.locator(selector) for visibility, count, text, and attribute checks.
+- Use only selectors listed in this table.
+
+2. SYSTEM OVERVIEW
+
+The application represents a simple online shopping system.
+
+Main user flow:
+Login
+  -> Products / Inventory
+  -> View Product
+  -> Add Product to Cart
+  -> Shopping Cart
+  -> Checkout
+  -> Customer Information
+  -> Order Overview
+  -> Finish
+  -> Order Confirmation
+
+3. FUNCTIONAL REQUIREMENTS
+
+FR-01: User Login
+
+The system shall provide a login page containing:
+- Username field
+- Password field
+- Login button
+
+FR-01.1 The user shall be able to enter a username.
+FR-01.2 The user shall be able to enter a password.
+FR-01.3 The user shall be able to submit the login form.
+FR-01.4 With valid credentials, the system shall navigate the user to the Products page.
+FR-01.5 With invalid credentials, the system shall display an appropriate error message.
+FR-01.6 If required login fields are empty, the system shall display a validation message.
+FR-01.7 A locked-out user shall not be allowed to log in.
+
+4. PRODUCT / INVENTORY
+
+FR-02: Product Listing
+
+After successful login, the system shall display the Products/Inventory page.
+
+Each product shall display:
+- Product name
+- Product image
+- Product description
+- Product price
+- Add to Cart button
+
+FR-02.1 The user shall be able to view available products.
+FR-02.2 The user shall be able to view product details.
+FR-02.3 The user shall be able to add a product to the cart.
+FR-02.4 The shopping cart indicator shall update when a product is added.
+
+5. PRODUCT SORTING
+
+FR-03: Sort Products
+
+The system shall provide product sorting functionality.
+
+The user shall be able to sort products by:
+1. Name: A to Z
+2. Name: Z to A
+3. Price: Low to High
+4. Price: High to Low
+
+FR-03.1 Selecting A to Z shall arrange products alphabetically.
+FR-03.2 Selecting Z to A shall arrange products in reverse alphabetical order.
+FR-03.3 Selecting Low to High shall arrange products according to ascending price.
+FR-03.4 Selecting High to Low shall arrange products according to descending price.
+
+6. PRODUCT DETAILS
+
+FR-04: Product Details
+
+The user shall be able to select a product and view its detailed information.
+
+The product detail page shall display:
+- Product name
+- Product image
+- Product description
+- Product price
+- Add to Cart functionality
+- Navigation back to products
+
+7. SHOPPING CART
+
+FR-05: Cart Management
+
+The system shall provide a shopping cart.
+
+FR-05.1 The user shall be able to open the cart.
+FR-05.2 The cart shall display selected products.
+FR-05.3 The cart shall display product names.
+FR-05.4 The cart shall display product prices.
+FR-05.5 The user shall be able to remove a product.
+FR-05.6 The cart indicator shall reflect the number of selected products.
+FR-05.7 The user shall be able to continue shopping.
+FR-05.8 The user shall be able to proceed to checkout.
+
+8. CHECKOUT
+
+FR-06: Checkout Information
+
+The system shall provide a checkout information page containing:
+- First Name
+- Last Name
+- Postal Code
+- Continue button
+- Cancel button
+
+FR-06.1 The user shall be able to enter first name.
+FR-06.2 The user shall be able to enter last name.
+FR-06.3 The user shall be able to enter postal code.
+FR-06.4 The system shall validate required checkout fields.
+FR-06.5 The system shall prevent the user from proceeding when required information is missing.
+FR-06.6 The Continue button shall navigate to the order overview when valid information is provided.
+
+9. ORDER OVERVIEW
+
+FR-07: Order Summary
+
+The system shall display an order overview before completing the purchase.
+
+The overview shall contain:
+- Selected products
+- Product prices
+- Item total
+- Applicable tax
+- Final total
+- Finish button
+- Cancel button
+
+FR-07.1 The system shall display the selected products correctly.
+FR-07.2 The system shall calculate the item total correctly.
+FR-07.3 The system shall calculate the final total correctly.
+FR-07.4 The user shall be able to finish the order.
+
+10. ORDER COMPLETION
+
+FR-08: Complete Purchase
+
+FR-08.1 When the user clicks Finish, the system shall complete the simulated purchase.
+FR-08.2 The system shall display an order confirmation.
+FR-08.3 The confirmation page shall indicate that the order has been successfully completed.
+
+11. LOGOUT
+
+FR-09: Logout
+
+FR-09.1 The user shall be able to open the application menu.
+FR-09.2 The user shall be able to select Logout.
+FR-09.3 After logout, the system shall return the user to the login page.
+
+12. RESET APPLICATION STATE
+
+FR-10: Reset State
+
+The system shall provide functionality to reset the application's current state.
+
+Resetting the application should clear relevant shopping/cart state and restore the application to its initial state.
+
+13. USER TYPES / TEST ACCOUNTS
+
+The application provides different user accounts intended to exercise different application behaviors.
+
+Examples:
+- standard_user: Normal application flow
+- locked_out_user: Login failure/locked account
+- problem_user: Problematic application behavior
+- performance_glitch_user: Performance-related behavior
+- visual_user: Visual-related testing
+
+Common test credentials:
+Username: standard_user
+Password: secret_sauce
+
+14. NON-FUNCTIONAL REQUIREMENTS
+
+NFR-01: Usability
+The application shall provide clear navigation between:
+Login -> Products -> Product Details -> Cart -> Checkout -> Confirmation
+
+NFR-02: Performance
+Pages and user interactions should respond within an acceptable time under normal conditions.
+
+Performance behavior should also be evaluated using the application's performance-oriented test user.
+
+NFR-03: Reliability
+The system shall maintain cart and checkout state correctly during normal navigation.
+
+NFR-04: Security
+The application should:
+- Validate user input.
+- Prevent unauthorized access to authenticated functionality.
+- Handle invalid login attempts appropriately.
+- Protect authenticated pages from unauthenticated access.
+
+NFR-05: Compatibility
+The application should function correctly on commonly used modern browsers.
+
+15. NEGATIVE TEST REQUIREMENTS
+
+Login:
+- Empty username
+- Empty password
+- Both fields empty
+- Invalid username
+- Invalid password
+- Locked-out account
+
+Cart:
+- Empty cart
+- Removing an item
+- Multiple items
+- Repeated add/remove operations
+
+Checkout:
+- Empty first name
+- Empty last name
+- Empty postal code
+- Missing multiple fields
+- Invalid input formats
+
+16. END-TO-END SCENARIO
+
+E2E-01: Complete Purchase
+
+1. Open SauceDemo
+2. Login with valid credentials
+3. Verify Products page
+4. Select a product
+5. Add product to cart
+6. Open cart
+7. Verify product
+8. Click Checkout
+9. Enter first name
+10. Enter last name
+11. Enter postal code
+12. Click Continue
+13. Verify order overview
+14. Click Finish
+15. Verify order confirmation
+16. Logout
+
+17. ACCEPTANCE CRITERIA
+
+The application shall be considered functionally acceptable when:
+- Valid users can log in successfully.
+- Invalid users receive appropriate errors.
+- Products are displayed correctly.
+- Product sorting works correctly.
+- Products can be added and removed from the cart.
+- Cart contents are accurate.
+- Required checkout fields are validated.
+- Order totals are calculated correctly.
+- Valid orders can be completed.
+- Order confirmation is displayed.
+- Users can log out successfully.
+- Application state can be reset.
+
+18. TESTING AGENT INPUT STRUCTURE
+
+This SRS is structured to support a multi-agent software testing platform:
+
+SRS
+  -> Requirement Analysis Agent
+  -> Test Planning Agent
+  -> Test Case Generation Agent
+  -> UI Automation Agent
+  -> API Testing Agent
+  -> Security Testing Agent
+  -> Bug Analysis / Reporting

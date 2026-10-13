@@ -1,0 +1,58 @@
+SIMPLE SOFTWARE REQUIREMENTS SPECIFICATION
+SauceDemo: https://www.saucedemo.com
+
+Purpose:
+Run one simple, reliable browser test: log in, add one product, open the cart,
+and complete checkout.
+
+Routes:
+- Login: /
+- Inventory: /inventory.html
+- Cart: /cart.html
+- Checkout information: /checkout-step-one.html
+- Checkout overview: /checkout-step-two.html
+- Checkout complete: /checkout-complete.html
+
+Test account:
+- Username: standard_user
+- Password: secret_sauce
+
+Allowed selectors:
+- Username field: input#user-name
+- Password field: input#password
+- Login button: input#login-button
+- Products title: .title
+- Add backpack button: button#add-to-cart-sauce-labs-backpack
+- Cart badge: span.shopping_cart_badge
+- Cart link: a.shopping_cart_link
+- Checkout button: button#checkout
+- First name field: input#first-name
+- Last name field: input#last-name
+- Postal code field: input#postal-code
+- Continue button: input#continue
+- Finish button: button#finish
+- Complete header: h2.complete-header
+
+Required test flow:
+1. Open the target URL.
+2. Fill input#user-name with standard_user.
+3. Fill input#password with secret_sauce.
+4. Click input#login-button.
+5. Verify /inventory.html and .title.
+6. Click button#add-to-cart-sauce-labs-backpack.
+7. Verify span.shopping_cart_badge.
+8. Click a.shopping_cart_link and verify /cart.html.
+9. Click button#checkout.
+10. Fill input#first-name with John.
+11. Fill input#last-name with Doe.
+12. Fill input#postal-code with 12345.
+13. Click input#continue and verify /checkout-step-two.html.
+14. Click button#finish and verify /checkout-complete.html.
+15. Verify h2.complete-header contains Thank you for your order!.
+
+Generation rules:
+- Generate only the required flow above.
+- Use only the selectors and routes listed in this document.
+- Do not invent selectors, routes, extra scenarios, or repeated actions.
+- Use page.fill for input fields, page.click for buttons and links, and
+  page.locator for checks.
