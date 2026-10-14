@@ -1,0 +1,71 @@
+=== TEST PLAN SUMMARY ===
+
+### High-Level Test Strategy and Key Testing Objectives
+
+#### Test Strategy Overview
+
+The test strategy will cover Smoke Testing, Functional Testing, and Regression Testing. The objectives are to ensure the system meets its functional requirements, validate user journeys, and maintain the functionality as updates or changes are made.
+
+#### Smoke Testing
+
+**Scope:**
+- FR-AUTH-01 to FR-AUTH-05: Verify that the login functionality works correctly, including validation of credentials and error messages.
+- FR-PROD-01: Ensure that the product items are displayed correctly.
+- FR-CART-01 to FR-CART-02: Confirm that the shopping cart functionality is functioning as expected.
+
+**Objectives:**
+- Verify that the core functionalities work as expected.
+- Identify critical bugs that would block further testing.
+- Validate the most basic and frequently used features.
+
+#### Functional Testing
+
+**Scope:**
+- FR-AUTH-01 to FR-AUTH-05: Validate the login process, including handling of valid and invalid credentials and error messages.
+- FR-PROD-01 to FR-PROD-03: Test the product display and sorting functionalities.
+- FR-CART-01 to FR-CART-03: Validate the cart and checkout process.
+- FR-CHK-01 to FR-CHK-03: Ensure that the checkout process is functioning correctly.
+
+**Objectives:**
+- Test the full user journey from login to checkout completion.
+- Ensure that all functional requirements are met.
+- Identify and document any bugs or defects for further investigation.
+
+#### Regression Testing
+
+**Scope:**
+- FR-AUTH-01 to FR-AUTH-05: Validate the login and logout functionality.
+- FR-PROD-01 to FR-PROD-03: Test the product display and sorting functionalities.
+- FR-CART-01 to FR-CART-03: Ensure the cart and checkout process is still functioning.
+- FR-CHK-01 to FR-CHK-03: Verify the checkout process is still correct.
+
+**Objectives:**
+- Ensure that changes or updates do not break existing functionalities.
+- Validate that the system still meets its functional requirements after modifications.
+- Document and prioritize any new bugs or issues identified during regression testing.
+
+### Key Testing Objectives
+
+1. **Authentication and Login:**
+   - Validate correct and incorrect credentials handling.
+   - Ensure the login process retains the user on the login page with appropriate error messages.
+   - Verify the logout functionality clears the session and returns the user to the login page.
+
+2. **Product Display and Sorting:**
+   - Ensure all product items are displayed with the correct image, title, and price.
+   - Validate that sorting options (Name, Price) work correctly and update the displayed items.
+
+3. **Shopping Cart and Checkout:**
+   - Confirm that items can be added to the cart and the count updates dynamically.
+   - Verify that navigating to the cart and checkout pages works as expected.
+   - Validate the checkout process from step one to completion and ensure the success page displays correctly.
+
+4. **User Journey:**
+   - Test the full user journey from login to checkout, including handling different user types (standard, locked out).
+   - Ensure all user interactions (clicks, inputs) are processed correctly and lead to the expected outcomes.
+
+5. **Error Handling:**
+   - Validate that all error messages are displayed correctly and provide clear instructions to the user.
+   - Ensure that all validation errors (empty fields, invalid credentials) are handled appropriately.
+
+By following this test strategy and focusing on these key objectives, the system can be thoroughly tested to ensure it meets its functional requirements and maintains its functionality over time.

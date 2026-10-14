@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: agentqa-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - HOST=0.0.0.0
+      - ENVIRONMENT=production
+      - CLIENT_ORIGIN=http://localhost
+      - MONGODB_URL=${MONGODB_URL:-mongodb://mongodb:27017}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME:-agentqa}
+      - JWT_SECRET=${JWT_SECRET:-agentqa_production_random_secret_replace_in_env}
+      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@example.com}
+      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD:-SecureAdminPassword2026!}
+      - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME:-System Administrator}
+    volumes:
+      - run_artifacts:/app/agent_outputs
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: agentqa-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  mongodb:
+    image: mongo:7.0
+    container_name: agentqa-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  run_artifacts:

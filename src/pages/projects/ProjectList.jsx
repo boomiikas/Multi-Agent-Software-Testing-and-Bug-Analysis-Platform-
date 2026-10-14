@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import ProgressBar from '../../components/ProgressBar';
 import Modal from '../../components/Modal';
 import EmptyState from '../../components/EmptyState';
-import { projectApi } from '../../services/api';
+import { projectApi, testRunApi } from '../../services/api';
 import './ProjectList.css';
 
 const statusMap = { completed: 'success', running: 'warning', failed: 'danger', pending: 'default' };
@@ -16,6 +16,8 @@ const statusMap = { completed: 'success', running: 'warning', failed: 'danger', 
 export default function ProjectList() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [startingRunId, setStartingRunId] = useState(null);
+  const [runError, setRunError] = useState(null);
   const [search, setSearch] = useState('');
   const [view, setView] = useState('grid');
   const [filter, setFilter] = useState('all');
@@ -23,9 +25,27 @@ export default function ProjectList() {
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
 
+  const handleStartRun = async (projectId) => {
+    try {
+      setRunError(null);
+      setStartingRunId(projectId);
+      const run = await testRunApi.startRun(projectId);
+      navigate(`/run-monitor?runId=${run.id || run.runId}`);
+    } catch (err) {
+      setRunError(err.message || 'Failed to start test run');
+      alert(err.message || 'Failed to start test run');
+    } finally {
+      setStartingRunId(null);
+    }
+  };
+
   useEffect(() => {
     projectApi.getProjects().then(data => {
-      setProjects(data);
+      setProjects(Array.isArray(data) ? data : []);
+      setLoading(false);
+    }).catch(err => {
+      console.error('Failed to load projects:', err);
+      setProjects([]);
       setLoading(false);
     });
   }, []);
@@ -113,7 +133,16 @@ export default function ProjectList() {
                   </div>
                 )}
                 <div className="pl-card__actions">
-                  <Button variant="primary" size="sm" leftIcon={Play} onClick={() => navigate('/run-monitor')}>Run</Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    leftIcon={Play}
+                    loading={startingRunId === p.id}
+                    disabled={startingRunId !== null}
+                    onClick={() => handleStartRun(p.id)}
+                  >
+                    Run
+                  </Button>
                   <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate(`/projects/${p.id}`)}>Edit</Button>
                   <Button variant="danger-ghost" size="sm" leftIcon={Trash2} onClick={() => setDeleteId(p.id)}>Delete</Button>
                 </div>
@@ -135,7 +164,14 @@ export default function ProjectList() {
                   <td>{p.totalRuns}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 4 }}>
-                      <Button variant="ghost" size="sm" leftIcon={Play} onClick={() => navigate('/run-monitor')} />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={Play}
+                        loading={startingRunId === p.id}
+                        disabled={startingRunId !== null}
+                        onClick={() => handleStartRun(p.id)}
+                      />
                       <Button variant="ghost" size="sm" leftIcon={Edit} onClick={() => navigate(`/projects/${p.id}`)} />
                       <Button variant="danger-ghost" size="sm" leftIcon={Trash2} onClick={() => setDeleteId(p.id)} />
                     </div>

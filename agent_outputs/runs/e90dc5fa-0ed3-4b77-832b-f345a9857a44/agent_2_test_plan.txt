@@ -1,0 +1,43 @@
+=== TEST PLAN SUMMARY ===
+
+### Test Plan Summary for SauceDemo Application
+
+#### High-Level Test Strategy
+The test strategy will include Smoke Testing, Functional Testing, and Regression Testing to ensure that the SauceDemo application meets the specified functional requirements.
+
+1. **Smoke Testing**
+   - **Objective**: Verify that the essential functionalities are working as expected without delving into detailed functionality.
+   - **Scope**: Basic login, successful and failed login scenarios.
+
+2. **Functional Testing**
+   - **Objective**: Validate all specified functionalities to ensure they work as intended.
+   - **Scope**:
+     - Login functionality: Both valid and invalid credentials.
+     - Navigation: Ability to navigate from login to checkout.
+     - Cart functionality: Adding and removing items.
+     - Checkout process: Display of correct billing and shipping information.
+     - Order placement: Completing the checkout process.
+     - Logout functionality: Ensuring users can log out after completing the checkout.
+
+3. **Regression Testing**
+   - **Objective**: Ensure that new changes or updates do not negatively impact existing functionalities.
+   - **Scope**: All functionalities tested in the functional testing phase to be retested after any changes.
+
+#### Key Testing Objectives
+- **Login Functionality**: 
+  - Verify successful login with valid credentials.
+  - Verify failure in login with invalid credentials.
+- **Navigation**: 
+  - Verify the user can navigate from the login page to the checkout process.
+- **Cart Functionality**:
+  - Verify the ability to add items to the cart.
+  - Verify the ability to remove items from the cart.
+- **Checkout Process**:
+  - Verify the display of correct billing and shipping information.
+  - Verify the ability to proceed to checkout from the cart page.
+  - Verify the ability to place an order and complete the checkout process.
+- **Logout Functionality**:
+  - Verify the user can log out after completing the checkout.
+
+### Concise Test Plan Summary
+The test plan for the SauceDemo application will focus on ensuring that all key functionalities are operational and that new updates do not introduce any regressions. The strategy includes initial smoke testing to ensure basic functionalities are working, followed by detailed functional testing to validate all required features. Regression testing will be conducted post-updates to maintain the integrity of the application. The primary objectives are to verify login, navigation, cart management, checkout process, and logout functionalities.

@@ -1,0 +1,5 @@
+=== EXTRACTED REQUIREMENTS ===
+
+- The software must render the main homepage.
+- The software must verify the page header.
+- The software must check responsiveness.

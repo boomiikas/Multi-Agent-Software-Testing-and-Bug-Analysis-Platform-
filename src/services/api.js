@@ -83,50 +83,28 @@ export const adminApi = {
   deleteUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
 };
 
-// --- API PLACEHOLDERS FOR FRONTEND DEVELOPMENT ---
-// These are stubbed methods that return a promise. 
-// When the backend is ready, replace the mock returns with actual request() calls.
-
-import { mockDashboardStats, mockTestRuns, mockProjects, mockLogs, mockReport, mockErrorTrace } from '../data/mockData';
-
-const simulateNetwork = (data, delay = 500) => new Promise(resolve => setTimeout(() => resolve(data), delay));
+// Real MongoDB-backed API services connected to FastAPI backend
 
 export const dashboardApi = {
-  // getStats: () => request('/dashboard/stats')
-  getStats: () => simulateNetwork(mockDashboardStats),
-  
-  // getRecentRuns: () => request('/dashboard/runs')
-  getRecentRuns: () => simulateNetwork(mockTestRuns),
+  getStats: () => request('/dashboard/stats'),
+  getRecentRuns: () => request('/dashboard/runs'),
 };
 
 export const projectApi = {
-  // getProjects: () => request('/projects')
-  getProjects: () => simulateNetwork(mockProjects),
-  
-  // getProject: (id) => request(`/projects/${id}`)
-  getProject: (id) => simulateNetwork(mockProjects.find(p => p.id === id) || mockProjects[0]),
-  
-  // createProject: (data) => request('/projects', { method: 'POST', body: data })
-  createProject: (data) => simulateNetwork({ id: 'p-' + Date.now(), ...data }),
-  
-  // updateProject: (id, data) => request(`/projects/${id}`, { method: 'PUT', body: data })
-  updateProject: (id, data) => simulateNetwork({ id, ...data }),
-  
-  // deleteProject: (id) => request(`/projects/${id}`, { method: 'DELETE' })
-  deleteProject: (id) => simulateNetwork({ success: true }),
+  getProjects: () => request('/projects'),
+  getProject: (id) => request(`/projects/${id}`),
+  createProject: (data) => request('/projects', { method: 'POST', body: data }),
+  updateProject: (id, data) => request(`/projects/${id}`, { method: 'PUT', body: data }),
+  deleteProject: (id) => request(`/projects/${id}`, { method: 'DELETE' }),
 };
 
 export const testRunApi = {
-  // startRun: (projectId) => request(`/runs`, { method: 'POST', body: { projectId } })
-  startRun: (projectId) => simulateNetwork({ runId: 'run-123', status: 'running' }),
-  
-  // getRunStatus: (runId) => request(`/runs/${runId}`)
-  getRunStatus: (runId) => simulateNetwork({ status: 'running', logs: mockLogs }),
-  
-  // cancelRun: (runId) => request(`/runs/${runId}/cancel`, { method: 'POST' })
-  cancelRun: (runId) => simulateNetwork({ success: true }),
-  
-  // restartRun: (runId) => request(`/runs/${runId}/restart`, { method: 'POST' })
-  restartRun: (runId) => simulateNetwork({ success: true }),
+  startRun: (projectId) => request('/runs', { method: 'POST', body: { projectId } }),
+  getRunStatus: (runId) => request(`/runs/${runId}`),
+  cancelRun: (runId) => request(`/runs/${runId}/cancel`, { method: 'POST' }),
+  restartRun: (runId) => request(`/runs/${runId}/restart`, { method: 'POST' }),
+  getReport: (runId) => request(`/runs/${runId}/report`),
+  getArtifactUrl: (runId, filename) => `${API_BASE}/runs/${runId}/artifacts/${filename}`,
 };
+
 

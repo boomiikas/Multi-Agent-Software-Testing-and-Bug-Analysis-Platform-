@@ -1,0 +1,57 @@
+{
+  "tools": {
+    "bandit": {
+      "tool": "bandit",
+      "available": true,
+      "version": null,
+      "executed": true,
+      "exitCode": 1,
+      "durationSeconds": 0.36,
+      "error": null
+    },
+    "pip-audit": {
+      "tool": "pip-audit",
+      "available": true,
+      "version": null,
+      "executed": true,
+      "exitCode": 0,
+      "durationSeconds": 47.68,
+      "error": null
+    },
+    "semgrep": {
+      "tool": "semgrep",
+      "available": false,
+      "version": null,
+      "executed": false,
+      "exitCode": null,
+      "durationSeconds": 0.0,
+      "error": "Semgrep is not installed in the active environment."
+    }
+  },
+  "findings": [
+    {
+      "tool": "bandit",
+      "ruleId": "B101",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "file": "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\scratch\\test_vuln.py",
+      "line": 2,
+      "description": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "remediation": "Consult Bandit documentation for rule B101: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "codeSnippet": "1 password = 123\n2 assert True"
+    }
+  ],
+  "countsBySeverity": {
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 1,
+    "INFO": 0
+  },
+  "totalFindings": 1,
+  "scannedScope": [
+    "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\scratch\\test_vuln.py",
+    "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\requirements.txt"
+  ],
+  "executedAt": "2026-10-13T17:22:13.296647+00:00",
+  "durationSeconds": 49.53
+}

@@ -1,0 +1,54 @@
+{
+  "errors": [],
+  "generated_at": "2026-10-13T18:02:48Z",
+  "metrics": {
+    "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\agent_outputs\\runs\\451eb41a-88bd-4c34-a189-a76156391a8e\\agent_4_ui_script.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 23,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 23,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "22 await page.locator(\"h2.complete-header-wrong\").wait_for(state=\"visible\")\n23 assert \"Thank you for your order!\" in await page.locator(\"h2.complete-header-wrong\").inner_text()\n",
+      "col_offset": 0,
+      "end_col_offset": 97,
+      "filename": "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\agent_outputs\\runs\\451eb41a-88bd-4c34-a189-a76156391a8e\\agent_4_ui_script.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 23,
+      "line_range": [
+        23
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    }
+  ]
+}

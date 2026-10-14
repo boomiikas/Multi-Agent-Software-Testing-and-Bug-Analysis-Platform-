@@ -1,107 +1,143 @@
-# Multi-Agent Software Testing and Bug Analysis Platform
+# AgentQA: Multi-Agent Software Testing and Bug Analysis Platform
 
-A comprehensive, state-of-the-art automated testing and bug analysis web platform powered by **LangGraph** and local LLMs run via **Ollama**. The platform processes software requirements, compiles structured test suites, generates and executes UI automation tests using **Playwright**, designs REST API tests, performs static security audits, diagnoses failures using traceback logs/screenshots, and compiles a unified report.
+A modern, production-grade automated software quality assurance platform powered by a **LangGraph multi-agent AI pipeline**, **FastAPI backend**, **MongoDB Atlas persistence**, and a **React/Vite web dashboard**.
 
----
-
-## 1. Core Platform Features
-
-- **Automated Requirement Mapping:** Parses high-level Software Requirement Specifications (SRS) documents to build requirement inventories.
-- **Dynamic UI Code Generation & Execution:** Generates asynchronous Playwright Python code from natural language requirements and DOM tables, compiling them on-the-fly and executing them dynamically in a sandbox.
-- **Context Dilution Prompt Architecture:** Prompt structures are optimized (placing selector reference tables at the very end of instructions) to counter context dilution, allowing small models like `gemma3:4b` to maintain strict adherence to element mappings.
-- **Dynamic Selector Resolution Engine:** Utilizes Python's standard `difflib.get_close_matches` sequence matching to dynamically resolve minor selector typos or hallucinations in the LLM-generated script against valid elements in the SRS, preventing execution crashes without hardcoded mappings.
-- **Robust Exception Handling & Failure Capturing:**
-  - Nested context manager exception catches capture page screenshots *before* Playwright closes the browser connection.
-  - Dynamically extracts the exact line of code that failed directly from the traceback frames and writes it as the `failure_reason` in output reports.
-- **ASCII-Safe Logger:** Streamlined output formatting converts console checkmarks to ASCII representations, preventing CP1252/UnicodeEncodeErrors when running within piped terminal outputs on Windows.
-- **API, Security, & Root Cause Auditing:** Incorporates deep-thinking models to compile backend test endpoints, audit code vulnerability vectors, and trace the structural origins of failed assertions.
+The platform ingests Software Requirement Specifications (SRS), coordinates eight specialized AI agents, executes real Playwright browser automation, performs live HTTPX API testing with strict SSRF controls, executes real Bandit and pip-audit security audits, conducts evidence-based Root Cause Analysis (RCA), executes controlled self-healing retries, and compiles executive quality reports exportable to Markdown, JSON, and PDF.
 
 ---
 
-## 2. Integrated LLM Model Matrix
+## 1. System Architecture
 
-The platform is designed to run locally using the following model stack:
-
-| Agent Node | Model Name | Parameter Size | Ollama Target | Primary Role |
-| :--- | :--- | :--- | :--- | :--- |
-| **Agent 1: Requirement Analysis** | `Qwen2.5-7B-Instruct` | 7.2 Billion | `qwen2.5:7b` | Extracts clean functional requirements. |
-| **Agent 2: Test Planning** | `Qwen2.5-7B-Instruct` | 7.2 Billion | `qwen2.5:7b` | Designs high-level test strategy and goals. |
-| **Agent 3: Test Case Generation** | `DeepSeek-R1-Distill-7B` | 7.5 Billion | `deepseek-r1:7b` | Builds comprehensive structured test cases. |
-| **Agent 4: UI Code Generator** | `Gemma 3 4B` | 4.2 Billion | `gemma3:4b` | Compiles Playwright test statements. |
-| **Agent 5: API Testing** | `DeepSeek-R1-Distill-7B` | 7.5 Billion | `deepseek-r1:7b` | Designs API endpoint validation schemas. |
-| **Agent 6: Security Auditing** | `DeepSeek-R1-Distill-7B` | 7.5 Billion | `deepseek-r1:7b` | Performs static scan on automation code. |
-| **Agent 7: Root Cause Analysis** | `Qwen2.5-7B-Instruct` | 7.2 Billion | `qwen2.5:7b` | Diagnoses failed tracebacks and screenshots. |
-| **Agent 8: Report Compiler** | `Gemma 3 4B` | 4.2 Billion | `gemma3:4b` | Formulates unified QA Markdown report. |
+```
+[ React / Vite UI ] <---> [ FastAPI Backend (Port 4000) ] <---> [ MongoDB Atlas ]
+                                     |
+                                     v
+                       [ 9-Stage LangGraph Pipeline ]
+ 1. Requirement Analysis (Agent 1: Qwen2.5-7B)
+ 2. Test Planning        (Agent 2: Qwen2.5-7B)
+ 3. Test Generation      (Agent 3: DeepSeek-R1-Distill-7B / Qwen)
+ 4. UI Script Generation (Agent 4: Gemma 3 4B)
+ 5. Live UI Execution    (Playwright Chromium Engine)
+ 6. Live API Testing     (HTTPX Engine + SSRF Destination Filter)
+ 7. Security Auditing    (Bandit AST Scanner + pip-audit CVE DB)
+ 8. Root Cause Analysis  (Evidence-Based Classifier + Retry Controller)
+ 9. Report Lead          (Agent 8: Gemma 3 4B -> Markdown / JSON / PDF)
+```
 
 ---
 
-## 3. Installation & Setup
+## 2. Core Capabilities
+
+- **Multi-Agent Orchestration:** 8 specialized agents collaborating sequentially with isolated state management in LangGraph.
+- **Real Browser Automation:** Headless Chromium execution via Playwright with automated screenshot capture on failure.
+- **Real API Testing:** Live HTTP requests with configurable assertions, latency benchmarks, and strict SSRF destination validation (rejects private ranges, cloud metadata `169.254.169.254`, and malicious redirects).
+- **Static Security Auditing:** Subprocess-isolated execution of **Bandit v1.9.4** (Python AST vulnerabilities) and **pip-audit v2.10.1** (PyPI dependency CVE database), with clean handling when Semgrep is unavailable.
+- **Evidence-Based RCA:** Evaluates real execution evidence (tracebacks, HTTP codes, CVEs, DOM states) into 7 distinct failure categories. Transparently distinguishes verified facts from LLM hypotheses.
+- **Controlled Self-Healing:** Dedicated retry controller with bounded retries (max 2), exponential backoff, before-and-after diff tracking, and strict non-retry rules for security, auth, and deterministic issues.
+- **Production Hardening:** Password hashing via bcrypt, JWT authorization with expiration, cross-tenant project/run isolation, startup safeguards preventing default admin credentials in production, and path traversal protection on artifact retrieval.
+- **Enterprise Reporting:** Run reports exportable in Markdown (`.md`), raw JSON, and printable HTML/PDF.
+
+---
+
+## 3. Local Development Setup (Windows / Linux / macOS)
 
 ### Prerequisites
-- **Python:** Version `3.11.x`
-- **Ollama:** Installed and running on the local host.
-- **System:** Windows / macOS / Linux (Windows execution includes automated CP1252 stdout encoding fixes).
+- **Python:** 3.11, 3.12, or 3.13 (Python 3.13.5 supported)
+- **Node.js:** v18+ and npm
+- **Ollama:** Installed and running locally with models:
+  ```bash
+  ollama pull qwen2.5:7b
+  ollama pull gemma3:4b
+  ollama pull deepseek-r1:7b
+  ```
+- **MongoDB:** MongoDB Atlas connection string or local MongoDB instance on port 27017.
 
-### Step 1: Clone & Configure Python Environment
-Initialize the environment inside the workspace directory:
+### Step 1: Clone and Configure Environment
+Copy the configuration template and populate required variables:
 ```bash
-# Create a virtual environment named "mini"
-python -m venv mini
-
-# Activate the virtual environment
-# On Windows (PowerShell):
-.\mini\Scripts\Activate.ps1
-# On Windows (CMD):
-.\mini\Scripts\activate.bat
-# On macOS/Linux:
-source mini/bin/activate
+cp .env.example .env
+```
+Ensure `.env` contains:
+```env
+PORT=4000
+HOST=127.0.0.1
+ENVIRONMENT=development
+CLIENT_ORIGIN=http://localhost:5173
+MONGODB_URL=your_mongodb_connection_string
+MONGODB_DB_NAME=agentqa
+JWT_SECRET=your_secure_random_jwt_secret_key
+DEFAULT_ADMIN_EMAIL=admin@example.com
+DEFAULT_ADMIN_PASSWORD=Admin@123
 ```
 
-### Step 2: Install Libraries
-Install packages within the active virtual environment:
+### Step 2: Install Python Dependencies & Playwright
 ```bash
-pip install langgraph langchain-ollama playwright
+# Install dependencies
+pip install -r requirements.txt
+pip install bandit pip-audit uvicorn
+
+# Install Playwright browser engine
+python -m playwright install chromium
 ```
 
-### Step 3: Install Playwright Browsers
-Install target headless browser engines:
+### Step 3: Install Frontend Dependencies
 ```bash
-playwright install chromium
+npm install
 ```
 
-### Step 4: Download Ollama Models
-Pull the model configurations to local cache:
+### Step 4: Run the Application
+
+**Terminal 1 — FastAPI Backend:**
 ```bash
-ollama pull gemma3:4b
-ollama pull deepseek-r1:7b
-ollama pull qwen2.5:7b
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 4000 --reload
+```
+Health check endpoint: `http://127.0.0.1:4000/api/health`
+
+**Terminal 2 — React/Vite Frontend:**
+```bash
+npm run dev
+```
+Open web browser at `http://localhost:5173`. Default seeded admin: `admin@example.com` / `Admin@123`.
+
+---
+
+## 4. Automated Testing & Verification
+
+Execute the complete test suite:
+```bash
+# Run all automated tests
+python -m pytest
+
+# Run dedicated feature test modules
+python -m pytest tests/test_api_testing.py          # Real API testing & SSRF
+python -m pytest tests/test_security_scanning.py    # Bandit & pip-audit scanning
+python -m pytest tests/test_rca_and_healing.py      # RCA & Retry Controller
+python -m pytest tests/test_pipeline_integration.py # Multi-agent pipeline & recovery
+python -m pytest tests/test_production_security.py  # Auth isolation & startup guards
+
+# Verify frontend build
+npm run build
 ```
 
 ---
 
-## 4. How to Execute
+## 5. Docker & Containerized Deployment
 
-1. Review or customize the target specifications inside `srs_document.txt`.
-2. Configure the target website endpoint in `main.py` (Default target: SwagLabs SauceDemo, `https://www.saucedemo.com`).
-3. Execute the orchestrator script:
-   ```bash
-   python main.py
-   ```
+To deploy the entire stack using Docker Compose:
+```bash
+# Build and run containers
+docker-compose up --build -d
+
+# Check service logs
+docker-compose logs -f
+```
+The frontend will be available at `http://localhost` (port 80) and backend at `http://localhost:4000`.
 
 ---
 
-## 5. Output Deliverables (`agent_outputs/`)
+## 6. Security & Safe Testing Guidelines
 
-Each successful run generates the following structured files in the outputs directory:
-
-- **`agent_1_requirements.txt`**: Clear list of extracted requirements.
-- **`agent_2_test_plan.txt`**: Outlines strategic goals, boundaries, and testing objectives.
-- **`agent_3_test_cases.json`**: Structured array containing test cases, precondition requirements, and validation criteria.
-- **`agent_4_ui_script.py`**: Clean, sanitized python script containing sequential Playwright actions.
-- **`agent_4_execution.json`**: Runtime statistics, pass/fail status, console output histories, and metadata.
-- **`agent_4_error_log.json`**: Created only on failure. Tracks the error type, exact traceback, failing line of code, and references the failure screenshot.
-- **`agent_4_failure_screenshot.png`**: Taken only on failure. Captured page view at the exact frame of exception throw.
-- **`agent_5_api_test_cases.json`**: Schema payloads, expected success/failure codes, and headers for mock backend endpoints.
-- **`agent_6_security_report.txt`**: Risk findings covering hardcoded credentials, SSL verification, and route security.
-- **`agent_7_rca_report.txt`**: Analysis indicating whether a failure is an application bug or a script error, with remediation steps.
-- **`agent_8_test_report.md`**: Master Markdown report compiling requirements coverage, automation, API, security, and RCA audits.
+1. **SSRF Restrictions:** The platform strictly forbids testing targets pointing to loopback addresses (`127.0.0.1`, `localhost`), private RFC 1918 subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), or cloud metadata endpoints (`169.254.169.254`).
+2. **Credential Redaction:** All sensitive HTTP headers (`Authorization`, `Cookie`, `X-Api-Key`) and sensitive JSON payload fields (`password`, `token`, `secret`) are automatically redacted prior to logging and database persistence.
+3. **Controlled Self-Healing:** The platform strictly prohibits autonomous code modification or weakening of security assertions. Retryable actions are bounded to a maximum of 2 attempts, and non-retryable failures (SSRF, Auth, CVEs) require human review.
+4. **Production Deployment Safeguard:** When `ENVIRONMENT=production`, the platform will refuse to start if the default dev `JWT_SECRET` or default admin password (`Admin@123`) is detected.

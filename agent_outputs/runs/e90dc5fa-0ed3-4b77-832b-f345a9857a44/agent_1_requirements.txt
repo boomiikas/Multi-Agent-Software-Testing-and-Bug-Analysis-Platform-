@@ -1,0 +1,10 @@
+=== EXTRACTED REQUIREMENTS ===
+
+- Verify successful login with valid credentials in the SauceDemo application.
+- Verify failure in login with invalid credentials in the SauceDemo application.
+- Navigate to the checkout process after successful login.
+- Verify the ability to add items to the cart.
+- Verify the ability to proceed to checkout from the cart page.
+- Verify the display of correct billing and shipping information during checkout.
+- Verify the ability to place an order and complete the checkout process.
+- Verify the ability to log out after completing the checkout.

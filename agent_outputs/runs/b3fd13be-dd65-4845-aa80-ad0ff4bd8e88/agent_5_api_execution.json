@@ -1,0 +1,39 @@
+{
+  "total": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "blocked": 0,
+  "tests": [
+    {
+      "name": "Application Root Endpoint Reachability",
+      "method": "GET",
+      "url": "https://example.com/",
+      "status": "PASSED",
+      "actualStatus": 200,
+      "responseTimeMs": 153.7,
+      "assertions": [
+        {
+          "name": "Status Code Check",
+          "passed": true,
+          "expected": 200,
+          "actual": 200,
+          "message": null
+        },
+        {
+          "name": "Response Time Threshold",
+          "passed": true,
+          "expected": "<=5000.0ms",
+          "actual": "153.7ms",
+          "message": null
+        }
+      ],
+      "requestHeaders": {},
+      "responseSnippet": "<!doctype html><html lang=en><head><meta charset=utf-8><link rel=icon href=data:,><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Example Domain</title><style>html{color-scheme:light dark;background:light-dark(#eee,#222)}body{font:16px/1.6 system-ui,sans-serif;max-width:26em;margin:auto;padding:25vh 2em 2em;text-align:center}</style></head><body><p>This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for t",
+      "error": null
+    }
+  ],
+  "durationSeconds": 2.06,
+  "limitation": "No structured API specification was extracted from SRS text. Executed baseline reachability check only; aggressive endpoint crawling was omitted.",
+  "targetBaseUrl": "https://example.com"
+}

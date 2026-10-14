@@ -1,0 +1,400 @@
+Based on the provided SRS, we can identify several key API endpoints that support the UI flows mentioned. Below are the API test cases for each of these endpoints, structured in the format requested:
+
+### 1. Authentication Module
+
+#### 1.1 Auth/Login
+
+**Endpoint:** `/api/auth/login`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/auth/login`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "username": "standard_user",
+    "password": "secret_sauce"
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "User authenticated successfully",
+    "user": {
+        "username": "standard_user"
+    }
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Invalid username or password"
+}
+```
+**Status Code:** 401
+
+**Example Error Responses:**
+- Username is required
+- Password is required
+
+---
+
+#### 1.2 Auth/Logout
+
+**Endpoint:** `/api/auth/logout`
+
+**HTTP Method:** DELETE
+
+**Request URL:** `/api/auth/logout`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "username": "standard_user"
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "User logged out successfully"
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "User not logged in"
+}
+```
+**Status Code:** 401
+
+---
+
+### 2. Product Catalog Module
+
+#### 2.1 Product Sort
+
+**Endpoint:** `/api/products/sort`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/products/sort`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "sort_by": "az"
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Products sorted by name",
+    "products": [
+        {"id": 1, "title": "Sauce Labs Backpack"},
+        {"id": 2, "title": "Sauce Labs Bike Light"},
+        ...
+    ]
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Invalid sort order provided"
+}
+```
+**Status Code:** 400
+
+---
+
+#### 2.2 Product Details
+
+**Endpoint:** `/api/products/:id`
+
+**HTTP Method:** GET
+
+**Request URL:** `/api/products/1` (replace 1 with the product ID)
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Product details retrieved",
+    "product": {
+        "id": 1,
+        "title": "Sauce Labs Backpack",
+        "price": "$29.99",
+        "image_url": "https://www.example.com/images/backpack.jpg"
+    }
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Product not found"
+}
+```
+**Status Code:** 404
+
+---
+
+### 3. Shopping Cart Module
+
+#### 3.1 Add to Cart
+
+**Endpoint:** `/api/cart/add`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/cart/add`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "product_id": 1,
+    "quantity": 1
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Product added to cart",
+    "cart": {
+        "item_count": 1,
+        "total_amount": "$29.99"
+    }
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Product not found"
+}
+```
+**Status Code:** 404
+
+---
+
+#### 3.2 Remove from Cart
+
+**Endpoint:** `/api/cart/remove`
+
+**HTTP Method:** DELETE
+
+**Request URL:** `/api/cart/remove`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "product_id": 1
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Product removed from cart",
+    "cart": {
+        "item_count": 0,
+        "total_amount": "$0.00"
+    }
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Product not found in cart"
+}
+```
+**Status Code:** 404
+
+---
+
+### 4. Checkout Module
+
+#### 4.1 Checkout Step 1: Your Information
+
+**Endpoint:** `/api/checkout/step-one`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/checkout/step-one`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "postal_code": "12345"
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Checkout step one completed",
+    "summary": {
+        "subtotal": "$29.99",
+        "total": "$29.99"
+    }
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Postal code is required"
+}
+```
+**Status Code:** 400
+
+---
+
+#### 4.2 Checkout Step 2: Overview
+
+**Endpoint:** `/api/checkout/step-two`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/checkout/step-two`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "continue": true
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Checkout step two completed",
+    "order_id": 123456789
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Invalid order"
+}
+```
+**Status Code:** 400
+
+---
+
+#### 4.3 Checkout Complete
+
+**Endpoint:** `/api/checkout/complete`
+
+**HTTP Method:** POST
+
+**Request URL:** `/api/checkout/complete`
+
+**Headers & Content-Type:**
+```
+Content-Type: application/json
+```
+
+**Request Payload Example (JSON):**
+```json
+{
+    "order_id": 123456789
+}
+```
+
+**Expected Successful Response (JSON):**
+```json
+{
+    "status": "success",
+    "message": "Checkout complete",
+    "success_message": "Thank you for your order!"
+}
+```
+**Status Code:** 200
+
+**Expected Validation/Error Response (JSON):**
+```json
+{
+    "status": "error",
+    "message": "Order not found"
+}
+```
+**Status Code:** 404
+
+---
+
+These test cases cover the major API endpoints supporting the UI flows in the SauceDemo application. Each case includes the HTTP method, request URL, headers, payload, and expected responses for both success and error conditions.

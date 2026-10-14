@@ -1,0 +1,53 @@
+=== TEST PLAN SUMMARY ===
+
+### Test Plan Summary
+
+#### Introduction
+This test plan outlines the strategy for testing the functional requirements of the SauceDemo application, focusing on smoke testing, functional testing, and regression testing. The objectives are to ensure the successful login to the account, access to the checkout workflow, navigation through checkout steps, and completion of the checkout process.
+
+#### Test Strategy
+
+1. **Smoke Testing**
+   - **Objective**: Validate basic system functionality and ensure that the application can be used without critical issues.
+   - **Scope**: 
+     - Verify the application loads correctly.
+     - Validate the login functionality.
+     - Ensure the checkout workflow is accessible after login.
+   - **Methods**: Automated and manual tests to quickly identify major defects.
+
+2. **Functional Testing**
+   - **Objective**: Thoroughly test each functionality as per the provided requirements.
+   - **Scope**:
+     - **Login**: Verify successful login to the SauceDemo account.
+     - **Checkout Workflow**: Ensure access to the checkout workflow after a successful login.
+     - **Checkout Steps Navigation**: Verify the ability to navigate through the checkout steps.
+     - **Checkout Completion**: Ensure the completion of the checkout process.
+   - **Methods**: 
+     - Manual testing to simulate user interactions.
+     - Automated testing for repetitive and high-traffic scenarios.
+
+3. **Regression Testing**
+   - **Objective**: Ensure that changes or updates do not break existing functionalities.
+   - **Scope**:
+     - All functionalities tested in the functional testing phase.
+   - **Methods**: Automated regression tests to run against new builds or updates, ensuring that no new issues are introduced.
+
+#### Key Testing Objectives
+
+1. **Login Functionality**
+   - Verify the application can handle valid and invalid login credentials.
+   - Ensure proper error messages are displayed for invalid credentials.
+   - Test the user experience post-login, including access to the checkout workflow.
+
+2. **Checkout Workflow**
+   - Ensure the user can navigate through the checkout steps without encountering errors.
+   - Test the interaction between different steps (e.g., shipping information, payment details).
+   - Verify the process completes successfully without any errors.
+
+3. **Navigation and Completion**
+   - Test the smooth transition between checkout steps.
+   - Validate the final checkout process (confirmation, payment, order completion).
+   - Ensure all necessary fields are validated and error messages are displayed appropriately.
+
+#### Conclusion
+The test plan is designed to ensure that the SauceDemo application meets the specified functional requirements. The combination of smoke, functional, and regression testing will help in identifying and addressing any issues early in the development lifecycle, thereby improving the overall quality and reliability of the application.

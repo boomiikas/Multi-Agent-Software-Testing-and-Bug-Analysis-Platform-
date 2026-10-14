@@ -1,0 +1,57 @@
+{
+  "tools": {
+    "bandit": {
+      "tool": "bandit",
+      "available": true,
+      "version": null,
+      "executed": true,
+      "exitCode": 1,
+      "durationSeconds": 0.44,
+      "error": null
+    },
+    "pip-audit": {
+      "tool": "pip-audit",
+      "available": true,
+      "version": null,
+      "executed": true,
+      "exitCode": 0,
+      "durationSeconds": 57.12,
+      "error": null
+    },
+    "semgrep": {
+      "tool": "semgrep",
+      "available": false,
+      "version": null,
+      "executed": false,
+      "exitCode": null,
+      "durationSeconds": 0.0,
+      "error": "Semgrep is not installed in the active environment."
+    }
+  },
+  "findings": [
+    {
+      "tool": "bandit",
+      "ruleId": "B101",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "file": "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\agent_outputs\\runs\\451eb41a-88bd-4c34-a189-a76156391a8e\\agent_4_ui_script.py",
+      "line": 23,
+      "description": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "remediation": "Consult Bandit documentation for rule B101: https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "codeSnippet": "22 await page.locator(\"h2.complete-header-wrong\").wait_for(state=\"visible\")\n23 assert \"Thank you for your order!\" in await page.locator(\"h2.complete-header-wrong\").inner_text()"
+    }
+  ],
+  "countsBySeverity": {
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 1,
+    "INFO": 0
+  },
+  "totalFindings": 1,
+  "scannedScope": [
+    "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\agent_outputs\\runs\\451eb41a-88bd-4c34-a189-a76156391a8e\\agent_4_ui_script.py",
+    "D:\\Project\\Multi-Agent-Software-Testing-and-Bug-Analysis-Platform-\\requirements.txt"
+  ],
+  "executedAt": "2026-10-13T18:03:45.542495+00:00",
+  "durationSeconds": 59.49
+}

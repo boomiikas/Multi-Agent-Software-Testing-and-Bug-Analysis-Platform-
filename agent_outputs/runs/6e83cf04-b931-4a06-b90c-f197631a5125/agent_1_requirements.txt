@@ -1,0 +1,6 @@
+=== EXTRACTED REQUIREMENTS ===
+
+- Verify successful login to SauceDemo account
+- Verify access to checkout workflow after successful login
+- Verify ability to navigate through checkout steps
+- Verify completion of checkout process

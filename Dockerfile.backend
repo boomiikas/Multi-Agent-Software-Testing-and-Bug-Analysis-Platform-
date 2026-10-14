@@ -1,0 +1,48 @@
+# Multi-Agent Software Testing & Bug Analysis Platform - Backend
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Install system dependencies required for Playwright and security scanners
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libasound2t64 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir bandit pip-audit uvicorn
+
+# Install Playwright Chromium browser
+RUN python -m playwright install chromium --with-deps || true
+
+# Copy project files
+COPY backend/ ./backend/
+COPY *.py ./
+COPY srs-document.txt ./
+
+# Expose backend port
+EXPOSE 4000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:4000/api/health || exit 1
+
+# Start FastAPI application
+CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "4000"]

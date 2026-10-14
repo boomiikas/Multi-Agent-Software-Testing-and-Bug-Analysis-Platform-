@@ -37,13 +37,22 @@ export default function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      dashboardApi.getStats(),
-      dashboardApi.getRecentRuns(),
-      projectApi.getProjects()
+      dashboardApi.getStats().catch(err => {
+        console.error('Failed to load stats:', err);
+        return { totalProjects: 0, activeRuns: 0, passRate: 0, avgDuration: '0m 0s', totalProjectsTrend: 0, activeRunsTrend: 0, passRateTrend: 0, avgDurationTrend: 0 };
+      }),
+      dashboardApi.getRecentRuns().catch(err => {
+        console.error('Failed to load recent runs:', err);
+        return [];
+      }),
+      projectApi.getProjects().catch(err => {
+        console.error('Failed to load projects:', err);
+        return [];
+      })
     ]).then(([s, r, p]) => {
       setStats(s);
-      setRuns(r);
-      setProjects(p);
+      setRuns(Array.isArray(r) ? r : []);
+      setProjects(Array.isArray(p) ? p : []);
       setLoading(false);
     });
   }, []);

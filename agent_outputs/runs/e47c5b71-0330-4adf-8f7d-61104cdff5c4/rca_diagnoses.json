@@ -1,0 +1,16 @@
+[
+  {
+    "failureCategory": "INFRASTRUCTURE_ISSUE",
+    "rootCauseHypothesis": "Pipeline stage exceeded execution timeout threshold.",
+    "supportingEvidence": [
+      "Timeout message: Ollama connection timeout during stage 2"
+    ],
+    "artifactReferences": [],
+    "confidence": "MEDIUM",
+    "justification": "Operation terminated prematurely before completing scheduled workload.",
+    "recommendedAction": "Check host CPU/GPU utilization, model service responsiveness, or network latency.",
+    "retryEligible": true,
+    "retryReason": "Transient resource starvation or latency spike may resolve on subsequent attempt.",
+    "isHypothesis": true
+  }
+]
