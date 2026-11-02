@@ -1,0 +1,38 @@
+=== TEST PLAN SUMMARY ===
+
+### High-Level Test Strategy
+
+#### Test Objectives:
+1. **Authentication Functionalities:** Ensure user can log in and out correctly, and handle locked-out users.
+2. **Product Display and Navigation:** Verify product display, sorting, and navigation to product detail pages.
+3. **Cart Operations:** Confirm items are added and removed from the cart, and the cart count updates accordingly.
+4. **Checkout Process:** Validate the steps and success headers in the checkout process.
+
+#### Test Scope:
+- **Smoke Testing:** Basic login functionality, product display, and cart addition.
+- **Functional Testing:** Detailed validation of all functional requirements.
+- **Regression Testing:** Ensure all features work after changes to existing code.
+
+### Smoke Testing
+- **FR-AUTH-01, FR-AUTH-04:** Verify login interface and error messages.
+- **FR-PROD-01, FR-PROD-02:** Check product display and navigation to PDP.
+- **FR-CART-01, FR-CART-02:** Confirm item addition to cart and count update.
+
+### Functional Testing
+- **FR-AUTH-01, FR-AUTH-02, FR-AUTH-03, FR-AUTH-04:** Validate login functionalities, including valid, invalid, and locked-out user scenarios.
+- **FR-PROD-01, FR-PROD-02, FR-PROD-03:** Test product display, sorting, and detail page navigation.
+- **FR-CART-01, FR-CART-02, FR-CART-03:** Ensure items are added and removed from the cart, and the count updates dynamically.
+- **FR-CHK-01, FR-CHK-02, FR-CHK-03:** Validate the entire checkout process, from step one to completion.
+
+### Regression Testing
+- **FR-AUTH-05:** Test logout functionality.
+- **All Functional Requirements:** Validate that all functional requirements still work after any changes or updates to the application.
+
+### Key Testing Objectives
+- Ensure all login and authentication requirements are met.
+- Confirm product display and navigation functionalities are working as expected.
+- Verify cart operations and update notifications.
+- Validate the complete checkout process, from start to finish.
+- Maintain functionality after any updates or changes.
+
+This high-level test strategy will ensure comprehensive coverage of the application's functionalities, maintaining a robust and reliable user experience.

@@ -1,0 +1,247 @@
+Based on the provided SRS, the following API test cases can be derived for the backend services supporting the UI flows of the SauceDemo e-commerce application. These test cases will cover the main functionalities such as Authentication, Product Catalog, Shopping Cart, and Checkout.
+
+### 1. Authentication Module
+
+#### 1.1 Login
+- **HTTP Method:** POST
+- **Request URL:** `/api/auth/login`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Login successful",
+    "user": {
+      "username": "standard_user",
+      "role": "user"
+    }
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid username/password"
+  }
+  ```
+  - **Status Code:** 401
+
+#### 1.2 Logout
+- **HTTP Method:** POST
+- **Request URL:** `/api/auth/logout`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "username": "standard_user"
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Logout successful"
+  }
+  ```
+  - **Status Code:** 200
+
+### 2. Product Catalog Module
+
+#### 2.1 Get Products
+- **HTTP Method:** GET
+- **Request URL:** `/api/products`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:** None
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "products": [
+      {
+        "id": 1,
+        "name": "Sauce Labs Backpack",
+        "price": 29.99,
+        "image": "https://www.saucedemo.com/images/productImages/123.jpg",
+        "category": "backpack"
+      },
+      // More products...
+    ]
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Failed to fetch products"
+  }
+  ```
+  - **Status Code:** 500
+
+#### 2.2 Sort Products
+- **HTTP Method:** GET
+- **Request URL:** `/api/products/sort?sort_by=name`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:** None
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "products": [
+      {
+        "id": 1,
+        "name": "Sauce Labs Backpack",
+        "price": 29.99,
+        "image": "https://www.saucedemo.com/images/productImages/123.jpg",
+        "category": "backpack"
+      },
+      // Sorted products...
+    ]
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid sort parameter"
+  }
+  ```
+  - **Status Code:** 400
+
+### 3. Shopping Cart Module
+
+#### 3.1 Add to Cart
+- **HTTP Method:** POST
+- **Request URL:** `/api/cart/add`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "productId": 1
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Product added to cart",
+    "cartCount": 1
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Product not found"
+  }
+  ```
+  - **Status Code:** 404
+
+#### 3.2 Remove from Cart
+- **HTTP Method:** DELETE
+- **Request URL:** `/api/cart/remove`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "productId": 1
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Product removed from cart",
+    "cartCount": 0
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Product not found in cart"
+  }
+  ```
+  - **Status Code:** 404
+
+### 4. Checkout Module
+
+#### 4.1 Start Checkout
+- **HTTP Method:** POST
+- **Request URL:** `/api/checkout/start`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "postalCode": "12345"
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Checkout started",
+    "cartCount": 1
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid postal code"
+  }
+  ```
+  - **Status Code:** 400
+
+#### 4.2 Finish Checkout
+- **HTTP Method:** POST
+- **Request URL:** `/api/checkout/finish`
+- **Headers & Content-Type:** `Content-Type: application/json`
+- **Request Payload:**
+  ```json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "postalCode": "12345"
+  }
+  ```
+- **Expected Successful Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Checkout completed",
+    "orderNumber": "123456789"
+  }
+  ```
+  - **Status Code:** 200
+
+- **Expected Error Response:**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid data"
+  }
+  ```
+  - **Status Code:** 400
+
+These test cases provide a comprehensive set of API test scenarios to ensure the backend services supporting the UI flows of the SauceDemo application are functioning as expected.

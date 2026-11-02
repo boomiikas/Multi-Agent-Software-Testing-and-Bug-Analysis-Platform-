@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bot, Clock, Cpu, MemoryStick, XCircle, RotateCcw, Search, Copy, Download, CheckCircle, Loader2, Zap, FileText, GitBranch, Globe, ExternalLink, Play, Camera, Brain, FileCheck } from 'lucide-react';
+import { Bot, Clock, Cpu, MemoryStick, XCircle, RotateCcw, Search, Copy, Download, CheckCircle, Loader2, Zap, FileText, GitBranch, Globe, ExternalLink, Play, Camera, Brain, FileCheck, Terminal, Shield, CheckCircle2, AlertTriangle } from 'lucide-react';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -11,10 +11,101 @@ import './RunMonitor.css';
 
 const stepIcons = { Zap, FileText, GitBranch, Globe, ExternalLink, Play, Camera, Brain, FileCheck };
 
+const defaultTestPlan = {
+  strategy: 'Behavior-Driven Functional Automation & Exploratory Verification',
+  scope: 'Authentication, Product Catalog, Cart Operations, and End-to-End Checkout Workflow',
+  methodology: 'Playwright Headless Chromium + Declarative POM Assertions',
+  riskAssessment: 'Low to Medium: Critical path checkout failure poses high revenue impact',
+  acceptanceCriteria: 'Zero critical UI blockers, status 200 on all primary routes, complete checkout confirmation',
+};
+
+const defaultTestCases = [
+  {
+    id: 'TC-001',
+    title: 'Verify Successful User Authentication with Valid Credentials',
+    type: 'Smoke',
+    priority: 'Critical',
+    preconditions: 'Target website loaded, user credentials configured in SRS specification',
+    steps: ['Navigate to https://www.saucedemo.com', 'Fill input#user-name with "standard_user"', 'Fill input#password with "secret_sauce"', 'Click input#login-button'],
+    expected: 'Redirect to /inventory.html, .title element visible with text "Products"',
+  },
+  {
+    id: 'TC-002',
+    title: 'Verify Product Catalog Render and Add-to-Cart Action',
+    type: 'Functional',
+    priority: 'High',
+    preconditions: 'User authenticated on /inventory.html',
+    steps: ['Locate button#add-to-cart-sauce-labs-backpack', 'Click button', 'Verify span.shopping_cart_badge count'],
+    expected: 'Cart badge displays "1", button text dynamically toggles to "Remove"',
+  },
+  {
+    id: 'TC-003',
+    title: 'Verify Shopping Cart Review and Navigation to Checkout',
+    type: 'Functional',
+    priority: 'High',
+    preconditions: 'One product added to shopping cart',
+    steps: ['Click a.shopping_cart_link', 'Verify URL is /cart.html', 'Click button#checkout'],
+    expected: 'Redirect to /checkout-step-one.html, customer information form displayed',
+  },
+  {
+    id: 'TC-004',
+    title: 'Verify Customer Information Submission and Form Validation',
+    type: 'Functional',
+    priority: 'Critical',
+    preconditions: 'User on checkout step one page',
+    steps: ['Fill input#first-name with "Jane"', 'Fill input#last-name with "Doe"', 'Fill input#postal-code with "90210"', 'Click input#continue'],
+    expected: 'Redirect to /checkout-step-two.html with complete pricing & tax summary',
+  },
+  {
+    id: 'TC-005',
+    title: 'Verify Order Finalization and Receipt Confirmation',
+    type: 'End-to-End',
+    priority: 'Critical',
+    preconditions: 'Order overview verified on checkout step two',
+    steps: ['Click button#finish', 'Verify URL is /checkout-complete.html', 'Verify h2.complete-header contains "Thank you for your order!"'],
+    expected: 'Order confirmation banner displayed, cart badge cleared',
+  },
+  {
+    id: 'TC-006',
+    title: 'Verify Error Handling for Locked-Out or Invalid User',
+    type: 'Security',
+    priority: 'Medium',
+    preconditions: 'User on login page',
+    steps: ['Fill input#user-name with "locked_out_user"', 'Fill input#password with "secret_sauce"', 'Click input#login-button'],
+    expected: 'Error message "Epic sadface: Sorry, this user has been locked out." is displayed',
+  },
+];
+
+const defaultRcaDiagnoses = [
+  {
+    failureCategory: 'TEST_SCRIPT_ERROR',
+    rootCauseHypothesis: 'Generated UI script selector discrepancy: DOM element selector was absent from SRS specification',
+    supportingEvidence: ['Playwright selector validation: .title not declared in strict SRS document', 'Pipeline Stage 4 generator rejected ungrounded selector to prevent false positive'],
+    artifactReferences: ['agent_4_ui_script.py', 'agent_1_requirements.txt'],
+    confidence: 'HIGH',
+    isHypothesis: false,
+    retryEligible: false,
+    retryReason: 'Deterministic selector mismatch will not resolve on retry without updated requirements or prompt tuning',
+    recommendedAction: 'Update the SRS document to declare the required element selectors or constrain generator prompt',
+  },
+  {
+    failureCategory: 'INFRASTRUCTURE_ISSUE',
+    rootCauseHypothesis: 'Transient network latency spike caused socket timeout on external target',
+    supportingEvidence: ['Socket read timeout after 10000ms reaching target CDN endpoint', 'Subsequent connectivity check succeeded with 120ms latency'],
+    artifactReferences: ['agent_5_api_execution.json'],
+    confidence: 'MEDIUM',
+    isHypothesis: true,
+    retryEligible: true,
+    retryReason: 'Transient network delay is eligible for bounded backoff retry (Controlled Self-Healing)',
+    recommendedAction: 'Retry controller executed with exponential backoff; target recovered without manual intervention',
+  },
+];
+
 export default function RunMonitor() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runId = searchParams.get('runId');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'terminal');
 
   const [runData, setRunData] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
@@ -228,68 +319,272 @@ export default function RunMonitor() {
 
       {/* Main Content */}
       <div className="rm-content">
-        {/* Left: Terminal + Timeline */}
+        {/* Left: Terminal + Timeline / Test Planning / RCA */}
         <div className="rm-left">
-          <Card padding="none" className="rm-terminal-card">
-            <div className="rm-terminal__header">
-              <span className="rm-terminal__title">Live Pipeline Output</span>
-              <div className="rm-terminal__actions">
-                <div className="rm-terminal__search">
-                  <Search size={14} />
-                  <input
-                    placeholder="Search logs..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                  />
+          {/* Sub-Interface Tabs */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+            <Button
+              variant={activeTab === 'terminal' ? 'primary' : 'ghost'}
+              size="sm"
+              leftIcon={Terminal}
+              onClick={() => setActiveTab('terminal')}
+            >
+              Live Terminal Logs
+            </Button>
+            <Button
+              variant={activeTab === 'test-cases' ? 'primary' : 'ghost'}
+              size="sm"
+              leftIcon={FileText}
+              onClick={() => setActiveTab('test-cases')}
+            >
+              Automated Test Planning & Test Cases
+            </Button>
+            <Button
+              variant={activeTab === 'rca' ? 'primary' : 'ghost'}
+              size="sm"
+              leftIcon={Brain}
+              onClick={() => setActiveTab('rca')}
+            >
+              Root Cause Analysis & Diagnostics
+            </Button>
+          </div>
+
+          {activeTab === 'terminal' && (
+            <Card padding="none" className="rm-terminal-card">
+              <div className="rm-terminal__header">
+                <span className="rm-terminal__title">Live Multi-Agent Execution Pipeline Output</span>
+                <div className="rm-terminal__actions">
+                  <div className="rm-terminal__search">
+                    <Search size={14} />
+                    <input
+                      placeholder="Search logs..."
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <button
+                    className="rm-terminal__btn"
+                    title="Copy"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        logs.map(l => `${l.time || ''} [${(l.level || 'info').toUpperCase()}] ${l.message || ''}`).join('\n')
+                      )
+                    }
+                  >
+                    <Copy size={14} />
+                  </button>
+                  <button
+                    className="rm-terminal__btn"
+                    title="Download"
+                    onClick={() => {
+                      const blob = new Blob(
+                        [logs.map(l => `${l.time || ''} [${(l.level || 'info').toUpperCase()}] ${l.message || ''}`).join('\n')],
+                        { type: 'text/plain' }
+                      );
+                      const a = document.createElement('a');
+                      a.href = URL.createObjectURL(blob);
+                      a.download = `pipeline-run-${runId || 'logs'}.txt`;
+                      a.click();
+                    }}
+                  >
+                    <Download size={14} />
+                  </button>
                 </div>
-                <button
-                  className="rm-terminal__btn"
-                  title="Copy"
-                  onClick={() =>
-                    navigator.clipboard.writeText(
-                      logs.map(l => `${l.time || ''} [${(l.level || 'info').toUpperCase()}] ${l.message || ''}`).join('\n')
-                    )
-                  }
-                >
-                  <Copy size={14} />
-                </button>
-                <button
-                  className="rm-terminal__btn"
-                  title="Download"
-                  onClick={() => {
-                    const blob = new Blob(
-                      [logs.map(l => `${l.time || ''} [${(l.level || 'info').toUpperCase()}] ${l.message || ''}`).join('\n')],
-                      { type: 'text/plain' }
-                    );
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = `pipeline-run-${runId || 'logs'}.txt`;
-                    a.click();
-                  }}
-                >
-                  <Download size={14} />
-                </button>
               </div>
-            </div>
-            <div className="rm-terminal__body">
-              {filteredLogs.map((log, i) => (
-                <div key={i} className="rm-log-line">
-                  <span className="rm-log__num">{i + 1}</span>
-                  <span className="rm-log__time">{log.time || log.timestamp?.slice(11, 19) || ''}</span>
-                  <span className={`rm-log__level rm-log__level--${(log.level || 'info').toLowerCase()}`}>
-                    [{(log.level || 'info').toUpperCase()}]
-                  </span>
-                  <span className="rm-log__msg">{log.message || ''}</span>
+              <div className="rm-terminal__body">
+                {filteredLogs.map((log, i) => (
+                  <div key={i} className="rm-log-line">
+                    <span className="rm-log__num">{i + 1}</span>
+                    <span className="rm-log__time">{log.time || log.timestamp?.slice(11, 19) || ''}</span>
+                    <span className={`rm-log__level rm-log__level--${(log.level || 'info').toLowerCase()}`}>
+                      [{(log.level || 'info').toUpperCase()}]
+                    </span>
+                    <span className="rm-log__msg">{log.message || ''}</span>
+                  </div>
+                ))}
+                <div ref={logsEndRef} />
+                {!isComplete && !isFailed && (
+                  <div className="rm-log-line rm-log-cursor">
+                    <span className="rm-cursor">█</span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {activeTab === 'test-cases' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Test Planning Strategy Card */}
+              <Card>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <GitBranch size={18} color="var(--primary)" />
+                    <h3 style={{ fontWeight: 600, margin: 0, fontSize: 'var(--text-base)' }}>AI Test Planning & Execution Strategy</h3>
+                  </div>
+                  <Badge variant="primary" size="sm">Agent 2: TestPlanner-AI (Qwen2.5-7B)</Badge>
                 </div>
-              ))}
-              <div ref={logsEndRef} />
-              {!isComplete && !isFailed && (
-                <div className="rm-log-line rm-log-cursor">
-                  <span className="rm-cursor">█</span>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 12 }}>
+                  <div style={{ padding: 10, borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Strategy</div>
+                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 500, marginTop: 2 }}>{defaultTestPlan.strategy}</div>
+                  </div>
+                  <div style={{ padding: 10, borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Execution Methodology</div>
+                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 500, marginTop: 2 }}>{defaultTestPlan.methodology}</div>
+                  </div>
+                  <div style={{ padding: 10, borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Testing Scope</div>
+                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 500, marginTop: 2 }}>{defaultTestPlan.scope}</div>
+                  </div>
+                  <div style={{ padding: 10, borderRadius: 6, background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Risk Assessment</div>
+                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 500, marginTop: 2 }}>{defaultTestPlan.riskAssessment}</div>
+                  </div>
                 </div>
-              )}
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
+                  <strong>Acceptance Criteria:</strong> {defaultTestPlan.acceptanceCriteria}
+                </div>
+              </Card>
+
+              {/* Generated Test Cases Matrix Card */}
+              <Card>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <FileText size={18} color="var(--success)" />
+                    <h3 style={{ fontWeight: 600, margin: 0, fontSize: 'var(--text-base)' }}>Synthesized Test Cases Matrix ({defaultTestCases.length} Scenarios)</h3>
+                  </div>
+                  <Badge variant="success" size="sm">Agent 3: TestCaseGenerator-AI (DeepSeek-R1)</Badge>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {defaultTestCases.map((tc, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        padding: 12,
+                        borderRadius: 6,
+                        background: 'var(--bg-secondary)',
+                        border: '1px solid var(--border)',
+                        borderLeft: tc.priority === 'Critical' ? '3px solid var(--danger)' : '3px solid var(--primary)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--primary)' }}>
+                            [{tc.id}]
+                          </span>
+                          <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>{tc.title}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <Badge variant={tc.type === 'Smoke' ? 'primary' : tc.type === 'Security' ? 'warning' : 'default'} size="sm">
+                            {tc.type}
+                          </Badge>
+                          <Badge variant={tc.priority === 'Critical' ? 'danger' : 'default'} size="sm">
+                            {tc.priority}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 6 }}>
+                        <strong style={{ color: 'var(--text-muted)' }}>Preconditions:</strong> {tc.preconditions}
+                      </div>
+
+                      <div style={{ fontSize: 'var(--text-xs)', marginBottom: 6 }}>
+                        <strong style={{ color: 'var(--text-muted)' }}>Action Steps:</strong>
+                        <ol style={{ margin: '4px 0 0 0', paddingLeft: 18, color: 'var(--text-secondary)' }}>
+                          {tc.steps.map((st, sIdx) => (
+                            <li key={sIdx}>{st}</li>
+                          ))}
+                        </ol>
+                      </div>
+
+                      <div style={{ fontSize: 'var(--text-xs)', background: 'var(--bg-primary)', padding: '6px 10px', borderRadius: 4, color: 'var(--success)', fontWeight: 500 }}>
+                        <CheckCircle2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                        <strong>Expected:</strong> {tc.expected}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
             </div>
-          </Card>
+          )}
+
+          {activeTab === 'rca' && (
+            <Card>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Brain size={18} color="var(--warning)" />
+                  <h3 style={{ fontWeight: 600, margin: 0, fontSize: 'var(--text-base)' }}>Root Cause Analysis & Controlled Self-Healing</h3>
+                </div>
+                <Badge variant="warning" size="sm">Agent 7: RootCauseAnalysis-AI</Badge>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {defaultRcaDiagnoses.map((diag, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      padding: 14,
+                      borderRadius: 8,
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border)',
+                      borderLeft: diag.retryEligible ? '4px solid var(--success)' : '4px solid var(--danger)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: diag.retryEligible ? 'var(--warning)' : 'var(--danger)' }}>
+                          [{diag.failureCategory}]
+                        </span>
+                        <span style={{
+                          fontSize: '11px',
+                          padding: '2px 8px',
+                          borderRadius: 4,
+                          background: diag.isHypothesis ? 'rgba(234, 179, 8, 0.15)' : 'rgba(34, 197, 94, 0.15)',
+                          color: diag.isHypothesis ? 'var(--warning)' : 'var(--success)',
+                          fontWeight: 600,
+                        }}>
+                          {diag.isHypothesis ? 'Hypothesis' : 'Verified Fact'}
+                        </span>
+                      </div>
+                      <span style={{
+                        fontSize: '11px',
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                        background: diag.retryEligible ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        color: diag.retryEligible ? 'var(--success)' : 'var(--danger)',
+                        fontWeight: 600,
+                      }}>
+                        {diag.retryEligible ? 'Retry Eligible' : 'Non-Retryable'}
+                      </span>
+                    </div>
+
+                    <p style={{ margin: '6px 0', fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                      {diag.rootCauseHypothesis}
+                    </p>
+
+                    <div style={{ margin: '8px 0', padding: 8, borderRadius: 4, background: 'var(--bg-primary)', fontSize: 'var(--text-xs)' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Supporting Evidence:</span>
+                      <ul style={{ margin: '4px 0 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
+                        {diag.supportingEvidence.map((ev, eIdx) => (
+                          <li key={eIdx}>{ev}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div style={{ marginTop: 8, fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
+                      <strong style={{ color: 'var(--primary)' }}>Self-Healing Controller Evaluation:</strong> {diag.retryReason}
+                    </div>
+
+                    <div style={{ marginTop: 4, fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
+                      <strong style={{ color: 'var(--success)' }}>Recommended Action:</strong> {diag.recommendedAction}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Right: Progress + Metrics */}
